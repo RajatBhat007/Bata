@@ -1,0 +1,1 @@
+export const URL = "https://www.m2ost.in/m2ostconsole/"
