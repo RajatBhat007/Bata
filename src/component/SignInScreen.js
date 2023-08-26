@@ -5,9 +5,9 @@ import { boxStyle } from './constant/comman-style';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
 import LinkInIconSvg from './constant/svg/LinkInIconSvg';
-import BataLogoSvg from './constant/svg/BataLogoSvg';
 
 const SignInScreen = () => {
+    
     return (
         <View style={styles.container}>
             <ImageBackground
@@ -16,15 +16,10 @@ const SignInScreen = () => {
             >
                 <View style={styles.imageContainer}>
                     <ImageBackground
-                        source={require('../assets/image2.png')}
+                        source={require('../assets/image3.png')}
                         style={styles.image}
                         imageStyle={{ borderRadius: 15 }}
                     >
-                        <View style={styles.circle}>
-                        <BataLogoSvg width={200} height={20}></BataLogoSvg>
-
-                        </View>
-
                         <View style={{ marginTop: "20%", marginLeft: 10 }}>
    
                             <Text style={{ justifyContent: "center", color: BGRED, fontSize: 24 }}>Login</Text>
@@ -99,11 +94,11 @@ const styles = StyleSheet.create({
       borderRadius:10
     },
     image: {
-      width: '95%',
-      height: '80%',
+      width: '100%',
+      height: '85%',
       resizeMode: 'contain',
-      marginLeft: '5%',
-      top: 30,
+      marginHorizontal:20,
+      top:40,
       borderRadius: 10,
     },
     text: {
