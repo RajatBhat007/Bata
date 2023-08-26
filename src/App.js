@@ -5,6 +5,7 @@ import WebView from 'react-native-webview';
 import { URL } from './component/environment';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { WHITE } from './component/color';
+import SignInScreen from './component/SignInScreen';
 
 
 const App = () => {
@@ -12,7 +13,7 @@ const App = () => {
   useEffect(() => {
     setTimeout(() => {
       setShowSplash(false);
-    }, 1000); 
+    }, 2000); 
   }, []);
 
   return (
@@ -23,7 +24,8 @@ const App = () => {
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle={"dark-content"} />
           <View style={styles.container}>
-        <WebView source={{ uri: URL }} />
+        {/* <WebView source={{ uri: URL }} /> */}
+        <SignInScreen />
       </View>
         </SafeAreaProvider>
       )}

@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-community/cli": "^11.3.7",
+    "@react-native-community/cli-doctor": "^11.3.7",
     "react": "18.2.0",
     "react-native": "^0.72.4",
     "react-native-gesture-handler": "^2.12.1",
