@@ -4,6 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { StatusBar, StyleSheet, View } from 'react-native';
 import { WHITE } from './component/color';
 import SignInScreen from './component/SignInScreen';
+import LoginScreen from './component/LoginScreen';
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
@@ -21,7 +22,8 @@ const App = () => {
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle={"dark-content"} />
           <View style={styles.container}>
-            <SignInScreen />
+            {/* <SignInScreen /> */}
+            <LoginScreen/>
           </View>
         </SafeAreaProvider>
       )}

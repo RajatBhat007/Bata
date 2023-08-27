@@ -6,7 +6,6 @@ import { boxStyle } from "../constant/comman-style";
 export const WalkStyle = StyleSheet.create({
     dashboardContainer: {
         flex: 1,
-        backgroundColor: WHITE
     },
     formFirstRow: {
         flexDirection: "row",
@@ -25,10 +24,10 @@ export const WalkStyle = StyleSheet.create({
         marginLeft: 3
     },
     viewElement: {
+        marginVertical:2,
         borderRadius: 12,
         backgroundColor: WHITE,
         elevation: 5,
-        top: 5,
         ...boxStyle,
     },
     searchPlace: {
@@ -39,6 +38,7 @@ export const WalkStyle = StyleSheet.create({
     },
     commonTxtName: {
         color:DARK_BLACK,
+        fontWeight:"bold",
         fontSize: 14,
         lineHeight: 18,
         marginLeft: 3
@@ -59,6 +59,7 @@ export const WalkStyle = StyleSheet.create({
         textAlign: "center",
         color: WHITE,
         fontSize: 16,
+        fontWeight:"bold",
         lineHeight: 20
     },
     getOTP1: {
@@ -81,6 +82,14 @@ export const WalkStyle = StyleSheet.create({
         marginLeft:5,
         fontSize: 16,
         lineHeight: 20
+    },
+    eyeIconContainer: {
+        position: 'absolute',
+        right: 30,
+        top: 0,
+        justifyContent: 'center',
+        height: '100%',
+        paddingHorizontal: 10,
     },
 }
 );

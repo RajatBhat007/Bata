@@ -79,6 +79,7 @@ const SignInScreen = () => {
                                                     setPassword(txt)
                                                 }}
                                             />
+                                            
                                         </View>
                                     </View>
                                 </View>
@@ -98,7 +99,7 @@ const SignInScreen = () => {
                         </ImageBackground>
                     </View>
                 </ImageBackground> :
-                <WebView source={{ uri: "https://www.m2ost.in/m2ostconsole/Account/LoginAPICheck?USERID=bata6&PASSWORD=Tgc@1234" }} />
+                <WebView source={{ uri: url }} />
             )}
         </View>
 
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         resizeMode: 'contain',
-        height: "60%"
     },
     imageContainer: {
         flex: 1,
