@@ -32,7 +32,7 @@ const SignInScreen = () => {
                 >
                     <View style={styles.imageContainer}>
                         <ImageBackground
-                            source={require('../assets/image3.png')}
+                            source={require('../assets/image5.png')}
                             style={styles.image}
                             imageStyle={{ borderRadius: 15 }}
                         >
@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-        top: 90,
+       top:50,
+       marginHorizontal:7,
         borderRadius: 10
     },
     image: {
