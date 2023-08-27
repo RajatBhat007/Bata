@@ -44,7 +44,7 @@ const LoginScreen = () => {
                             contentContainerStyle={styles.scrollViewContainer}
                             keyboardShouldPersistTaps="handled"
                         >
-                            <View style={styles.contentContainer}>
+                            <View style={styles.imageContainer}>
                                 <ImageBackground
                                     source={require('../assets/image5.png')}
                                     style={styles.image}
@@ -119,7 +119,7 @@ const LoginScreen = () => {
                             </View>
                         </KeyboardAwareScrollView>
                     </ImageBackground> :
-                    <WebView source={{ uri: "" }} />
+                    <WebView source={{ uri: url }} />
                 )}
             </KeyboardAvoidingView>
         </SafeAreaView>
@@ -148,6 +148,14 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: "25%",
         borderRadius: 10,
+    },
+    imageContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 7,
+        paddingBottom: 50,
+        borderRadius: 10
     },
 });
 
