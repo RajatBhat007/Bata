@@ -11,6 +11,8 @@ export const WalkStyle = StyleSheet.create({
     formFirstRow: {
         flexDirection: "row",
         marginVertical: 15,
+        justifyContent:"center",
+        alignItems:"center",
         // paddingHorizontal: 25,
         marginHorizontal: 0,
     },

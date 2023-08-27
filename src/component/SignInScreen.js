@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TextInput, Linking } from 'react-native';
-import { BGRED, BLACK, DARK_BLACK} from './color';
+import { BGRED, BLACK, DARK_BLACK } from './color';
 import { boxStyle } from './constant/comman-style';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
@@ -36,9 +36,11 @@ const SignInScreen = () => {
                             style={styles.image}
                             imageStyle={{ borderRadius: 15 }}
                         >
-                            <View style={{ marginTop: "20%", marginLeft: 10 }}>
 
-                                <Text style={{ justifyContent: "center", color: BGRED, fontSize: 24 }}>Login</Text>
+                            <View style={{ marginTop: "45%" }}>
+                                <View>
+                                    <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", alignItems: "center", marginLeft: 20, fontWeight: "bold" }}>Login</Text>
+                                </View>
                                 <View style={WalkStyle.formFirstRow}>
                                     <View style={{ width: '90%' }}>
                                         <View style={WalkStyle.formTxt}>
@@ -116,15 +118,15 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-       top:50,
-       marginHorizontal:7,
+        top: 50,
+        marginHorizontal: 7,
         borderRadius: 10
     },
     image: {
         width: '100%',
         height: '85%',
         resizeMode: 'contain',
-        marginHorizontal: 20,
+        marginHorizontal: 25,
         top: 40,
         borderRadius: 10,
     },
@@ -139,7 +141,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingVertical: 10,
         paddingHorizontal: 15,
-        borderRadius:12,
+        borderRadius: 12,
         color: 'black',
         backgroundColor: 'white',
         borderRadius: 10,
