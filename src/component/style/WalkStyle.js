@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { BGRED, BLACK, WHITE } from "../color";
+import { BGRED, BLACK, DARK_BLACK, WHITE } from "../color";
 import { boxStyle } from "../constant/comman-style";
 
 
@@ -23,7 +23,7 @@ export const WalkStyle = StyleSheet.create({
         marginLeft: 3
     },
     viewElement: {
-        borderRadius: 10,
+        borderRadius: 12,
         backgroundColor: WHITE,
         elevation: 5,
         top: 5,
@@ -36,6 +36,7 @@ export const WalkStyle = StyleSheet.create({
         borderRadius: 10,
     },
     commonTxtName: {
+        color:DARK_BLACK,
         fontSize: 14,
         lineHeight: 18,
         marginLeft: 3
