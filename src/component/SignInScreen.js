@@ -12,8 +12,29 @@ const SignInScreen = () => {
     const [password, setPassword] = useState('');
     const [url, setUrl] = useState('')
     const [webview, setWebview] = useState(true)
-
+    const [error, setError] = useState({
+        username: '',
+        password: ''
+    });
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePasswordVisibility = () => {
+        setShowPassword((prevShowPassword) => !prevShowPassword);
+      };
     const login = async () => {
+        if (username.trim() === '') {
+            setError(prevError => ({ ...prevError, username: 'Username is required' }));
+            return;
+        }
+
+        if (password.trim() === '') {
+            setError(prevError => ({ ...prevError, password: 'Password is required' }));
+            return;
+        }
+
+        // Clear previous errors if input is valid
+        setError({ username: '', password: '' });
+
+        // Rest of your login logic
         if (username !== '' && password !== '') {
             console.log(username);
             console.log(password);
@@ -25,7 +46,9 @@ const SignInScreen = () => {
 
     return (
         <View style={styles.container}>
-            {(webview ?
+            {webview ? (
+                <WebView source={{ uri: url }} />
+            ) : (
                 <ImageBackground
                     source={require('../assets/image1.png')}
                     style={styles.backgroundImage}
@@ -36,8 +59,7 @@ const SignInScreen = () => {
                             style={styles.image}
                             imageStyle={{ borderRadius: 15 }}
                         >
-
-                            <View style={{ marginTop: "45%" }}>
+                            <View style={{ marginTop: "40%" }}>
                                 <View>
                                     <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", alignItems: "center", marginLeft: 20, fontWeight: "bold" }}>Login</Text>
                                 </View>
@@ -73,13 +95,19 @@ const SignInScreen = () => {
                                                 placeholderTextColor="#34437a4d"
                                                 keyboardType="default"
                                                 maxLength={30}
-                                                secureTextEntry={true}
+                                                secureTextEntry={!showPassword}
                                                 value={password}
                                                 onChangeText={txt => {
                                                     setPassword(txt)
                                                 }}
                                             />
-                                            
+                                            <Pressable onPress={togglePasswordVisibility} style={WalkStyle.eyeIconContainer}>
+                                                {showPassword ? (
+                                                    <EyeIconSvg width={18} height={18} />
+                                                ) : (
+                                                    <HideEyeIcon width={18} height={18} />
+                                                )}
+                                            </Pressable>
                                         </View>
                                     </View>
                                 </View>
@@ -89,20 +117,18 @@ const SignInScreen = () => {
                                         style={WalkStyle.getOTPText}>Login</Text>
                                 </PressableClick>
                                 {/* <PressableClick
-                                    style={WalkStyle.getOTP1}>
-                                    <LinkInIconSvg width={20} height={20}></LinkInIconSvg>
-                                    <Text accessible={true}
-                                        style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
-                                </PressableClick> */}
-                                <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered By the gamification company</Text>
+                    style={WalkStyle.getOTP1}>
+                    <LinkInIconSvg width={20} height={20}></LinkInIconSvg>
+                    <Text accessible={true}
+                        style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
+                </PressableClick> */}
+                                <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered By the Gamification Company</Text>
                             </View>
                         </ImageBackground>
                     </View>
-                </ImageBackground> :
-                <WebView source={{ uri: url }} />
+                </ImageBackground>
             )}
         </View>
-
     );
 };
 
@@ -168,5 +194,14 @@ const styles = StyleSheet.create({
 });
 
 export default SignInScreen;
+
+
+
+
+
+
+
+
+
 
 
