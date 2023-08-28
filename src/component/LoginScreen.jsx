@@ -186,7 +186,7 @@ const LoginScreen = () => {
                                  <Text accessible={true}
                                      style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
                              </PressableClick> */}
-                                     <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered By the Gamification Company</Text>
+                                     <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered By The Gamification Company</Text>
                                  </View>
                              </ImageBackground>
                          </View>
