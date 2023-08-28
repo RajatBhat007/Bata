@@ -60,7 +60,7 @@ const App = () => {
       {/* Exit confirmation pop-up */}
       {showExitConfirmation && (
         Alert.alert(
-          "Please the app back button or home button  to navigate",
+          "Please use the app back button or home button to navigate",
           [
             {
               text: "ok",
