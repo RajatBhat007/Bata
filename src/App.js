@@ -16,7 +16,7 @@ const App = () => {
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+      Alert.alert('Please the app back button or home button to navigate', [
         {
           text: 'Ok',
           onPress: () => null,
