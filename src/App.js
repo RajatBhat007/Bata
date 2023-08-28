@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import BataImageGif from './component/BataImageGif';
+import { BackHandler, Alert, StatusBar, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Alert, BackHandler, StatusBar, StyleSheet, View } from 'react-native';
 import { WHITE } from './component/color';
+import BataImageGif from './component/BataImageGif';
 import LoginScreen from './component/LoginScreen';
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
   useEffect(() => {
     setTimeout(() => {
@@ -16,14 +17,14 @@ const App = () => {
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Please the app back button or home button to navigate', [
-        {
-          text: 'Ok',
-          onPress: () => null,
-          style: 'Ok',
-        },
-      ]);
-      return true;
+      if (showExitConfirmation) {
+        // If exit confirmation is already showing, allow back to close the app
+        return false;
+      } else {
+        // Show exit confirmation and prevent back from closing the app
+        setShowExitConfirmation(true);
+        return true;
+      }
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -32,7 +33,16 @@ const App = () => {
     );
 
     return () => backHandler.remove(); // Cleanup event listener on unmount
-  }, []);
+  }, [showExitConfirmation]);
+
+  const handleExitConfirmation = () => {
+    // Hide the exit confirmation and allow back to close the app
+    setShowExitConfirmation(false);
+  };
+
+  const exitApp = () => {
+    BackHandler.exitApp();
+  };
 
   return (
     <>
@@ -46,6 +56,21 @@ const App = () => {
           </View>
         </SafeAreaProvider>
       )}
+
+      {/* Exit confirmation pop-up */}
+      {showExitConfirmation && (
+        Alert.alert(
+          "Exit Confirmation",
+          "Are you sure you want to exit the app?",
+          [
+            {
+              text: "ok",
+              onPress: handleExitConfirmation,
+              style: "ok"
+            },
+          ]
+        )
+      )}
     </>
   );
 }
@@ -53,7 +78,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: WHITE, // Set the background color of the parent View
+    backgroundColor: WHITE,
   },
 });
 

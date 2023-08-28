@@ -12,6 +12,8 @@ const BataImageGif = () => {
       />
     </View>
   );
+
+  
 }
 
 const styles = StyleSheet.create({
