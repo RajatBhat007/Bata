@@ -12,7 +12,6 @@ export const WalkStyle = StyleSheet.create({
         marginVertical: 15,
         justifyContent:"center",
         alignItems:"center",
-        // paddingHorizontal: 25,
         marginHorizontal: 0,
     },
     formTxt: {
@@ -48,7 +47,6 @@ export const WalkStyle = StyleSheet.create({
         height: 55,
         marginTop: "6%",
         width: "80%",
-        right:15,
         borderRadius: 24,
         justifyContent: "center",
         alignItems: "center",

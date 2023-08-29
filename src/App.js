@@ -59,7 +59,7 @@ const App = () => {
       {showExitConfirmation && (
         Alert.alert(
           "Hold on",
-          "Please use the app back button or home button  to navigate",
+          "Please use the app back button or home button to navigate",
           [
             {
               text: "OK",
