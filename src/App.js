@@ -18,10 +18,8 @@ const App = () => {
   useEffect(() => {
     const backAction = () => {
       if (showExitConfirmation) {
-        // If exit confirmation is already showing, allow back to close the app
         return false;
       } else {
-        // Show exit confirmation and prevent back from closing the app
         setShowExitConfirmation(true);
         return true;
       }

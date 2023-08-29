@@ -1,11 +1,11 @@
 import React, { useState ,useEffect} from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable } from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable,Alert } from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { BGRED, DARK_BLACK } from './color';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
-import { Url } from './environment';
+import { Url ,bataUrllogin} from './environment';
 import WebView from 'react-native-webview';
 import EyeIconSvg from './constant/svg/EyeIconSvg';
 import HideEyeIcon from './constant/svg/HideEyeIcon';
@@ -22,7 +22,7 @@ const LoginScreen = () => {
     const [webview, setWebview] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [hideLoginScreen,sethideLoginSreen]=useState(false)
-
+  
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogin = async () => {
@@ -67,38 +67,60 @@ const LoginScreen = () => {
         if (username !== '' && password !== '') {
             console.log(username);
             console.log(password);
-            let bataurl = `${Url}?USERID=${username}&PASSWORD=${password}`
-            console.log(bataurl);
-            await AsyncStorage.setItem('bataurl', bataurl);
-            setUrl(bataurl)
-            // setWebview(false)
-            handleLogin()
+                 
+            const options = {
+                method: 'GET',
+                headers: { accept: 'application/json', authkey: '318438A60qs5Ysgqr5e47c80dP1' }
+            };
+            console.log(options);
 
+            let result = await fetch(`${Url}?USERID=${username}&PASSWORD=${password}`, options)
+            console.log(result);
+
+            let response = await result.json()
+            console.log(response);
+
+            if (response.ResponseCode == 'SUCCESS') {
+                console.log('status code 200', response.message);
+                let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
+                console.log(bataurl);
+                await AsyncStorage.setItem('bataurl', bataurl);
+                setUrl(bataurl)
+                handleLogin()
+
+            }
+            if (response.ResponseCode == 'FAILURE') {
+             
+                Alert.alert(
+                   "FAILURE",
+                  (response.ResponseMessage),
+                    [
+                     {
+                    text: "OK",
+                    onPress: handleExitConfirmation,
+                     style: "cancel"
+                     }, 
+                  ]
+                 )
+            } 
+            else{
+             
+            }
         }
     };
+
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
 
-    // const calculate15Days=()=>{
-    //     console.log('--------------------------');
-    //    var LoginTime= new Date()
-    //     console.log('loginTime',LoginTime);
-    //     var futureDateDynamic=LoginTime
-    //     console.log("futureDateDynamic",futureDateDynamic);
-    //     var twoDaysLater=new Date(futureDateDynamic)
-    //     twoDaysLater.setDate(twoDaysLater.getDate() + 2);
-    //     console.log("twoDaysLater",twoDaysLater);
-    //     console.log("show",hideLoginScreen);
-    //     setTimeout(() => {
-    //         var currentDate=new Date();
-    //         console.log("currentDate",currentDate);
-    //         if(new Date(LoginTime)<currentDate && twoDaysLater>currentDate){
-    //             sethideLoginSreen(true)
-    //             console.log('hide---',hideLoginScreen);
-    //          }
-    //       }, 2000);
-    // }
+    const handleExitConfirmation = () => {
+        // Hide the exit confirmation and allow back to close the app
+         setUsername('')
+         setPassword('')
+        setIsLoggedIn(false)      
+
+       };
+  
 
     return (
         <SafeAreaView style={styles.container}>
@@ -186,7 +208,7 @@ const LoginScreen = () => {
                                  <Text accessible={true}
                                      style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
                              </PressableClick> */}
-                                     <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered By The Gamification Company</Text>
+                                     <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered by The Gamification Company</Text>
                                  </View>
                              </ImageBackground>
                          </View>
