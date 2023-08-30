@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking } from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler} from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { BGRED, DARK_BLACK } from './color';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
 import { Url, bataUrllogin } from './environment';
-import WebView from 'react-native-webview';
 import EyeIconSvg from './constant/svg/EyeIconSvg';
 import HideEyeIcon from './constant/svg/HideEyeIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // or any other storage library you prefer
+import WebViewScreen from './WebViewScreen';
 
 
 const backgroundImage = require('../assets/image1.png');
@@ -24,15 +24,14 @@ const LoginScreen = () => {
     const [webview, setWebview] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [hideLoginScreen, sethideLoginSreen] = useState(false);
+    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
     const [userData, setUserData] = useState({
         UserName: "",
         UserID: "",
         ORGID: "",
         fullname:""
     });
-
-    console.log(userData, ".....777");
-
+    
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogin = async () => {
@@ -171,7 +170,7 @@ const LoginScreen = () => {
             Linking.openURL(deepLinkURL);
         }
     };
-
+    
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
@@ -181,10 +180,10 @@ const LoginScreen = () => {
             >
                 {(isLoggedIn ?
 
-                    <WebView
-                        source={{ uri: url }}
-                        onNavigationStateChange={handleNavigationChange}
-                    />
+                    <WebViewScreen
+                    url={url}
+                    userData={userData}
+                    onNavigationStateChange={handleNavigationChange}/>
                     :
                     <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
                         <KeyboardAwareScrollView

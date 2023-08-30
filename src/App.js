@@ -15,32 +15,32 @@ const App = () => {
     }, 2230);
   }, []);
 
-  useEffect(() => {
-    const backAction = () => {
-      if (showExitConfirmation) {
-        return false;
-      } else {
-        setShowExitConfirmation(true);
-        return true;
-      }
-    };
+  // useEffect(() => {
+  //   const backAction = () => {
+  //     if (showExitConfirmation) {
+  //       return false;
+  //     } else {
+  //       setShowExitConfirmation(true);
+  //       return true;
+  //     }
+  //   };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     backAction,
+  //   );
 
-    return () => backHandler.remove(); // Cleanup event listener on unmount
-  }, [showExitConfirmation]);
+  //   return () => backHandler.remove(); // Cleanup event listener on unmount
+  // }, [showExitConfirmation]);
 
-  const handleExitConfirmation = () => {
-    // Hide the exit confirmation and allow back to close the app
-    setShowExitConfirmation(false);
-  };
+  // const handleExitConfirmation = () => {
+  //   // Hide the exit confirmation and allow back to close the app
+  //   setShowExitConfirmation(false);
+  // };
 
-  const exitApp = () => {
-    BackHandler.exitApp();
-  };
+  // const exitApp = () => {
+  //   BackHandler.exitApp();
+  // };
 
   return (
     <>
@@ -53,22 +53,6 @@ const App = () => {
             <LoginScreen />
           </View>
         </SafeAreaProvider>
-      )}
-
-      {/* Exit confirmation pop-up */}
-      {showExitConfirmation && (
-        Alert.alert(
-          "Hold on",
-          "Please use the app back button or home button to navigate",
-          [
-            {
-              text: "OK",
-              onPress: handleExitConfirmation,
-              style: "cancel"
-            },
-
-          ]
-        )
       )}
     </>
   );
