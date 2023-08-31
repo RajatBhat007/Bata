@@ -35,6 +35,7 @@ const LoginScreen = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
     const handleLogin = async () => {
+        // Simulate login logic
         setIsLoggedIn(true);
         await AsyncStorage.setItem('lastLoginDate', new Date().toString());
         const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
@@ -86,11 +87,15 @@ const LoginScreen = () => {
             console.log(result);
 
             let response = await result.json()
+            console.log(response, "......2222");
+
             if (response.ResponseCode === 'SUCCESS') {
                 console.log('status code 200', response.message);
                 let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
                 console.log(bataurl);
                 await AsyncStorage.setItem('bataurl', bataurl);
+
+                // Set the userData state with dynamic data from the response
                 setUserData({
                     UserName: response.UserName,
                     UserID: response.UserID,
@@ -115,6 +120,7 @@ const LoginScreen = () => {
                     ]
                 )
             }
+            // Handle other cases here if needed
         }
     };
 
@@ -123,6 +129,7 @@ const LoginScreen = () => {
     };
 
     const handleExitConfirmation = () => {
+        // Hide the exit confirmation and allow back to close the app
         setUsername('')
         setPassword('')
         setIsLoggedIn(false)
@@ -131,15 +138,18 @@ const LoginScreen = () => {
 
     const linking = {
         async getInitialURL() {
+            // Check if app was opened from a deep link
             const url = await Linking.getInitialURL();
             if (url != null) {
                 return url;
             }
+            // Check if there is an initial firebase notification
 
         },
         subscribe(listener) {
             const onReceiveURL = ({ url }) => listener(url);
             console.log(onReceiveURL, "7777");
+            // Listen to incoming links from deep linking
             Linking.addEventListener('url', onReceiveURL);
 
             const url = message?.data?.link;
@@ -153,6 +163,8 @@ const LoginScreen = () => {
     const handleNavigationChange = (navState) => {
         const { url: newUrl } = navState
         if (newUrl.startsWith('https://tgc.onelink.me')) {
+            console.log(newUrl, "....ww");
+            // Redirect to the app using deep linking
             const deepLinkURL = `https://tgc.onelink.me/1Ut0/jouhje9i?Orgid=15&UID=${userData.UserName}&name=${userData.fullname}`;
 
             Linking.openURL(deepLinkURL);
@@ -292,19 +304,19 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
 
-    input:{
-        height: 55,
-        width: '100%',
-        paddingVertical: 10,
-        paddingHorizontal: 15,
-        borderRadius: 12,
-        color: 'black',
-        backgroundColor: 'white',
-        fontSize: 16,
-        fontFamily: 'Inter',
-        fontWeight: '500',
-        letterSpacing: -0.352,
-    }
+    // input:{
+    //     height: 55,
+    //     width: '100%',
+    //     paddingVertical: 10,
+    //     paddingHorizontal: 15,
+    //     borderRadius: 12,
+    //     color: 'black',
+    //     backgroundColor: 'white',
+    //     fontSize: 16,
+    //     fontFamily: 'Inter',
+    //     fontWeight: '500',
+    //     letterSpacing: -0.352,
+    // }
 
 });
 
