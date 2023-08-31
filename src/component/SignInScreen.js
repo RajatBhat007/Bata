@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, StyleSheet, TextInput, Linking } from 'react-native';
-import { BGRED, BLACK, DARK_BLACK } from './color';
+import { BGRED,DARK_BLACK } from './color';
 import { boxStyle } from './constant/comman-style';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
@@ -30,11 +30,7 @@ const SignInScreen = () => {
             setError(prevError => ({ ...prevError, password: 'Password is required' }));
             return;
         }
-
-        // Clear previous errors if input is valid
         setError({ username: '', password: '' });
-
-        // Rest of your login logic
         if (username !== '' && password !== '') {
             console.log(username);
             console.log(password);
