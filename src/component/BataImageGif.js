@@ -7,7 +7,7 @@ const BataImageGif = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={require('../assets/bata.gif')}
+        source={require('../assets/bata4.gif')}
         style={styles.image}
       />
     </View>

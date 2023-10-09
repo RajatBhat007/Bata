@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler} from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler, ActivityIndicator} from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { BGRED, DARK_BLACK } from './color';
@@ -33,7 +33,10 @@ const LoginScreen = () => {
     });
     
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // New loading state
 
+
+    
     const handleLogin = async () => {
         // Simulate login logic
         setIsLoggedIn(true);
@@ -59,7 +62,7 @@ const LoginScreen = () => {
                     console.log("bataUrl1111", bataurl1);
                     setUrl(bataurl1)
                     setIsLoggedIn(true);
-
+                    setIsLoading(false);
                 } else {
                     setIsLoggedIn(false);
                 }
@@ -69,7 +72,23 @@ const LoginScreen = () => {
         checkLastLoginDate();
     }, []);
 
+    useEffect(() => {
+        if (isLoading) {
+            const loaderTimer = setTimeout(() => {
+                setIsLoading(false);
+            }, 400); // 2 seconds
+            return () => clearTimeout(loaderTimer);
+        }
+    }, [isLoading]);
 
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                <ActivityIndicator size="large" color="red" />
+                <Text style={{ color: 'red', fontSize: 20 }}>Loading, please wait for some time</Text>
+            </View>
+        );
+    }
     const login = async () => {
         console.log('kkkk');
 
