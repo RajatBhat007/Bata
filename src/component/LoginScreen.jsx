@@ -323,19 +323,19 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
 
-    // input:{
-    //     height: 55,
-    //     width: '100%',
-    //     paddingVertical: 10,
-    //     paddingHorizontal: 15,
-    //     borderRadius: 12,
-    //     color: 'black',
-    //     backgroundColor: 'white',
-    //     fontSize: 16,
-    //     fontFamily: 'Inter',
-    //     fontWeight: '500',
-    //     letterSpacing: -0.352,
-    // }
+    input:{
+        height: 55,
+        width: '100%',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderRadius: 12,
+        color: 'black',
+        backgroundColor: 'white',
+        fontSize: 16,
+        fontFamily: 'Inter',
+        fontWeight: '500',
+        letterSpacing: -0.352,
+    }
 
 });
 
