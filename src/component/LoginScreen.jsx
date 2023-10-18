@@ -5,7 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { BGRED, DARK_BLACK } from './color';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
-import { Url, bataUrllogin } from './environment';
+import { Url, bataUrllogin, prime_url } from './environment';
 import EyeIconSvg from './constant/svg/EyeIconSvg';
 import HideEyeIcon from './constant/svg/HideEyeIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // or any other storage library you prefer
@@ -35,8 +35,6 @@ const LoginScreen = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // New loading state
 
-
-    
     const handleLogin = async () => {
         // Simulate login logic
         setIsLoggedIn(true);
@@ -110,8 +108,8 @@ const LoginScreen = () => {
 
             if (response.ResponseCode === 'SUCCESS') {
                 console.log('status code 200', response.message);
-                let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
-                console.log(bataurl);
+                let bataurl = `${prime_url}?USERID=${username}&PASSWORD=${password}`
+                console.log(prime_url);
                 await AsyncStorage.setItem('bataurl', bataurl);
 
                 // Set the userData state with dynamic data from the response
