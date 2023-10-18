@@ -78,7 +78,6 @@ const App = () => {
           <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
           <View style={styles.container}>
             <LoginScreen />
-            {/* <UpdateChecker></UpdateChecker> */}
           </View>
         </SafeAreaProvider>
       )}
