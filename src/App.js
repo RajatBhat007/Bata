@@ -15,8 +15,8 @@ const App = () => {
   const installedBuildNumber = DeviceInfo.getBuildNumber();
 
 
-  const latestVersion = '1.1.2'; // Update this to the latest version of your app
-  const latestBuildNumber = '4';   // Update this to the latest build number of your app
+  const latestVersion = '1.1.3'; // Update this to the latest version of your app
+  const latestBuildNumber = '5';   // Update this to the latest build number of your app
   console.log(installedVersion,installedBuildNumber,".......");
   console.log(typeof(installedVersion),typeof(installedBuildNumber),".type...");
 
