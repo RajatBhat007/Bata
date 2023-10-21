@@ -1,0 +1,30 @@
+{
+    "project_info": {
+      "project_number": "177415152904",
+      "project_id": "bata-e7c32",
+      "firebase_url":"https://bata-e7c32.firebaseio.com",
+      "storage_bucket": "bata-e7c32.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:177415152904:android:2a3ae6b03a490c84a238bd",
+          "android_client_info": {
+            "package_name": "com.tgc.bata"
+          }
+        },
+        "oauth_client": [],
+        "api_key": [
+          {
+            "current_key": "AIzaSyAS31xrMxNGV3eMs4m4QMV56_vvKqStqlQ"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": []
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }
