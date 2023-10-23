@@ -1,4 +1,4 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
+# Resolve react_native_pods.rb with node to allow for hoistings
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
     "react-native/scripts/react_native_pods.rb",
@@ -13,7 +13,7 @@ prepare_react_native_project!
 #
 # To fix this you can also exclude `react-native-flipper` using a `react-native.config.js`
 # ```js
-# module.exports = {
+# module.exports = {s
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
@@ -49,6 +49,11 @@ target 'TGCBATA' do
     inherit! :complete
     # Pods for testing
   end
+
+  #....add any library need headers
+
+  pod 'FirebaseCoreInternal', :modular_headers => true
+pod 'GoogleUtilities', :modular_headers => true
 
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202

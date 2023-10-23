@@ -52,9 +52,7 @@ const App = () => {
               Linking.openURL(
                 'https://play.google.com/store/apps/details?id=com.tgcbata'
               );
-
-              // For iOS
-              // Linking.openURL('https://apps.apple.com/app/idyourappid');
+              Linking.openURL('https://appstoreconnect.apple.com/apps/6463896673/appstore');
             },
           },
         ]
