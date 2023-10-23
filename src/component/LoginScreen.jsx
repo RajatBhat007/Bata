@@ -84,8 +84,8 @@ const LoginScreen = () => {
 
             if (response.ResponseCode === 'SUCCESS') {
                 console.log('status code 200', response.message);
-                let bataurl = `${prime_url}?USERID=${username}&PASSWORD=${password}`
-                console.log(prime_url);
+                let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
+                console.log(bataUrllogin);
                 await AsyncStorage.setItem('bataurl', bataurl);
 
                 // Set the userData state with dynamic data from the response
