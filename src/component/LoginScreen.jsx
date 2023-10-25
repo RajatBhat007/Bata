@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler, ActivityIndicator} from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking, BackHandler, ActivityIndicator } from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { BGRED, DARK_BLACK } from './color';
@@ -29,9 +29,9 @@ const LoginScreen = () => {
         UserName: "",
         UserID: "",
         ORGID: "",
-        fullname:""
+        fullname: ""
     });
-    
+
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // New loading state
 
@@ -44,7 +44,33 @@ const LoginScreen = () => {
 
     };
 
- 
+    useEffect(() => {
+        const checkLastLoginDate = async () => {
+            const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
+            console.log('lastlogindate', lastLoginDate);
+            if (lastLoginDate) {
+                const currentDate = new Date();
+                console.log("current date", currentDate);
+                const daysSinceLastLogin = Math.floor(
+                    (currentDate - new Date(lastLoginDate)) / (1000 * 60 * 60 * 24)
+                );
+                console.log("days", daysSinceLastLogin);
+                if (daysSinceLastLogin < 15) {
+                    const bataurl1 = await AsyncStorage.getItem('bataurl');
+                    console.log("bataUrl1111", bataurl1);
+                    setUrl(bataurl1)
+                    setIsLoggedIn(true);
+                    setIsLoading(false);
+                } else {
+                    setIsLoggedIn(false);
+                }
+            }
+        };
+
+        checkLastLoginDate();
+
+    }, []);
+
 
     useEffect(() => {
         if (isLoading) {
@@ -93,7 +119,7 @@ const LoginScreen = () => {
                     UserName: response.UserName,
                     UserID: response.UserID,
                     ORGID: response.ORGID,
-                    fullname:response.fullname
+                    fullname: response.fullname
                 });
 
                 setUrl(bataurl)
@@ -163,7 +189,7 @@ const LoginScreen = () => {
             Linking.openURL(deepLinkURL);
         }
     };
-    
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
@@ -174,9 +200,9 @@ const LoginScreen = () => {
                 {(isLoggedIn ?
 
                     <WebViewScreen
-                    url={url}
-                    userData={userData}
-                    onNavigationStateChange={handleNavigationChange}/>
+                        url={url}
+                        userData={userData}
+                        onNavigationStateChange={handleNavigationChange} />
                     :
                     <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
                         <KeyboardAwareScrollView
@@ -297,7 +323,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
 
-    input:{
+    input: {
         height: 55,
         width: '100%',
         paddingVertical: 10,
@@ -314,5 +340,3 @@ const styles = StyleSheet.create({
 });
 
 export default LoginScreen;
-
-
