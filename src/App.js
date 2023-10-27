@@ -23,17 +23,23 @@ const App = () => {
   const installedVersion = DeviceInfo.getVersion();
 
   const getVersions = async () => {
-    const users = await firestore().collection('versions').get();
-    const versionFromFirestore = users.docs[0]._data.version;
-    console.log(versionFromFirestore,"......111");
-    if (versionFromFirestore !== installedVersion) {
-      setUpdatedVersion(versionFromFirestore);
-      setShowPopup(true); // Set the condition to true to show the popup
-    } else {
-      setShowPopup(false); // Set the condition to false to hide the popup
+    if (!popupShown) { // Check if the pop-up has already been shown
+      const users = await firestore().collection('versions').get();
+      if (users.docs.length > 0) {
+        const versionFromFirestore = users.docs[0]._data.version;
+        console.log(versionFromFirestore, '......111');
+        if (versionFromFirestore && versionFromFirestore !== installedVersion) {
+          setUpdatedVersion(versionFromFirestore);
+          setShowPopup(true); // Set the condition to true to show the popup
+          setPopupShown(true); // Set the flag to indicate that the pop-up has been shown
+        } else {
+          setShowPopup(false); // Set the condition to false to hide the popup
+        }
+      } else {
+        setShowPopup(false); // No data found, so hide the popup
+      }
     }
   };
-
   useEffect(() => {
     getVersions();
   }, []);
@@ -48,13 +54,13 @@ const App = () => {
             text: 'Update',
             onPress: () => {
               // Open the respective app store for the update
-              // For Android
-              Linking.openURL(
-                'https://play.google.com/store/apps/details?id=com.tgcbata'
-              );
-
-              // For iOS
-              // Linking.openURL('https://apps.apple.com/app/idyourappid');
+              if (Platform.OS === 'android') {
+                Linking.openURL(
+                  'https://play.google.com/store/apps/details?id=com.tgcbata'
+                );
+              } else {
+                Linking.openURL('https://appstoreconnect.apple.com/apps/6463896673/appstore/ios/version/inflight');
+              }
             },
           },
         ]
