@@ -7,7 +7,6 @@ import App from './src/App';
 import {name as appName} from './app.json';
 import { firebase } from '@react-native-firebase/app'
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyAS31xrMxNGV3eMs4m4QMV56_vvKqStqlQ",
     authDomain: "177415152904",
