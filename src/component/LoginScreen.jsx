@@ -44,33 +44,52 @@ const LoginScreen = () => {
 
     };
 
+    // useEffect(() => {
+    //     const checkLastLoginDate = async () => {
+    //         const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
+    //         console.log('lastlogindate', lastLoginDate);
+    //         if (lastLoginDate) {
+    //             const currentDate = new Date();
+    //             console.log("current date", currentDate);
+    //             const daysSinceLastLogin = Math.floor(
+    //                 (currentDate - new Date(lastLoginDate)) / (1000 * 60 * 60 * 24)
+    //             );
+    //             console.log("days", daysSinceLastLogin);
+    //             if (daysSinceLastLogin < 15) {
+    //                 const bataurl1 = await AsyncStorage.getItem('bataurl');
+    //                 console.log("bataUrl1111", bataurl1);
+    //                 setUrl(bataurl1)
+    //                 setIsLoggedIn(true);
+    //                 setIsLoading(false);
+    //             } else {
+    //                 setIsLoggedIn(false);
+    //             }
+    //         }
+    //     };
+
+    //     checkLastLoginDate();
+
+    // }, []);
+
     useEffect(() => {
         const checkLastLoginDate = async () => {
             const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
             console.log('lastlogindate', lastLoginDate);
             if (lastLoginDate) {
-                const currentDate = new Date();
-                console.log("current date", currentDate);
-                const daysSinceLastLogin = Math.floor(
-                    (currentDate - new Date(lastLoginDate)) / (1000 * 60 * 60 * 24)
-                );
-                console.log("days", daysSinceLastLogin);
-                if (daysSinceLastLogin < 15) {
-                    const bataurl1 = await AsyncStorage.getItem('bataurl');
-                    console.log("bataUrl1111", bataurl1);
-                    setUrl(bataurl1)
-                    setIsLoggedIn(true);
-                    setIsLoading(false);
-                } else {
-                    setIsLoggedIn(false);
-                }
+                // User has a last login date, meaning they were logged in
+                const bataurl1 = await AsyncStorage.getItem('bataurl');
+                console.log("bataUrl1111", bataurl1);
+                setUrl(bataurl1);
+                setIsLoggedIn(true);
+                setIsLoading(false);
+            } else {
+                // User is not logged in
+                setIsLoggedIn(false);
             }
         };
-
+    
         checkLastLoginDate();
-
     }, []);
-
 
     useEffect(() => {
         if (isLoading) {
