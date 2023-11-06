@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { BackHandler,Alert} from 'react-native';
+import { BackHandler, Alert } from 'react-native';
 import WebView from 'react-native-webview';
 
 const WebViewScreen = ({ url, userData, onNavigationStateChange }) => {
-    console.log(userData,".......wwww");
+  console.log(userData, ".......wwww");
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('Hold on!', 'Are you sure you want to go back?', [
+      Alert.alert('Hold on!', 'Are you sure you want to exist?', [
         {
           text: 'Cancel',
           onPress: () => null,
           style: 'cancel',
         },
-        {text: 'YES', onPress: () => BackHandler.exitApp()},
+        { text: 'YES', onPress: () => BackHandler.exitApp() },
       ]);
       return true;
     };

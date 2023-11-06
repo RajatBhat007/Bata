@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking, BackHandler, ActivityIndicator } from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler, ActivityIndicator} from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { BGRED, DARK_BLACK } from './color';
@@ -29,20 +29,20 @@ const LoginScreen = () => {
         UserName: "",
         UserID: "",
         ORGID: "",
-        fullname: ""
+        fullname:""
     });
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // New loading state
 
-    const handleLogin = async () => {
-        // Simulate login logic
-        setIsLoggedIn(true);
-        await AsyncStorage.setItem('lastLoginDate', new Date().toString());
-        const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
-        console.log('lastlogindate inside', lastLoginDate);
+    // const handleLogin = async () => {
+    //     // Simulate login logic
+    //     setIsLoggedIn(true);
+    //     await AsyncStorage.setItem('lastLoginDate', new Date().toString());
+    //     const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
+    //     console.log('lastlogindate inside', lastLoginDate);
 
-    };
+    // };
 
     // useEffect(() => {
     //     const checkLastLoginDate = async () => {
@@ -68,23 +68,40 @@ const LoginScreen = () => {
     //     };
 
     //     checkLastLoginDate();
-
     // }, []);
+
+    const handleLogin = async () => {
+        // Simulate login logic
+        setIsLoggedIn(true);
+        // Set the last login date to a future date (10 years from now)
+        const futureDate = new Date();
+        futureDate.setFullYear(futureDate.getFullYear() + 10);
+        await AsyncStorage.setItem('lastLoginDate', futureDate.toString());
+        const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
+        console.log('lastlogindate inside', lastLoginDate);
+        const bataurl1 = await AsyncStorage.getItem('bataurl');
+        console.log("bataUrl1111", bataurl1);
+        setUrl(bataurl1);
+        setIsLoading(false);
+    };
+
 
     useEffect(() => {
         const checkLastLoginDate = async () => {
             const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
             console.log('lastlogindate', lastLoginDate);
             if (lastLoginDate) {
-                // User has a last login date, meaning they were logged in
-                const bataurl1 = await AsyncStorage.getItem('bataurl');
-                console.log("bataUrl1111", bataurl1);
-                setUrl(bataurl1);
-                setIsLoggedIn(true);
-                setIsLoading(false);
-            } else {
-                // User is not logged in
-                setIsLoggedIn(false);
+                const currentDate = new Date();
+                const futureDate = new Date(lastLoginDate);
+                if (currentDate < futureDate) {
+                    const bataurl1 = await AsyncStorage.getItem('bataurl');
+                    console.log("bataUrl1111", bataurl1);
+                    setUrl(bataurl1);
+                    setIsLoggedIn(true);
+                    setIsLoading(false);
+                } else {
+                    setIsLoggedIn(false);
+                }
             }
         };
     
@@ -129,7 +146,7 @@ const LoginScreen = () => {
 
             if (response.ResponseCode === 'SUCCESS') {
                 console.log('status code 200', response.message);
-                let bataurl = `${prime_url}?USERID=${username}&PASSWORD=${password}`
+                let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
                 console.log(prime_url);
                 await AsyncStorage.setItem('bataurl', bataurl);
 
@@ -138,7 +155,7 @@ const LoginScreen = () => {
                     UserName: response.UserName,
                     UserID: response.UserID,
                     ORGID: response.ORGID,
-                    fullname: response.fullname
+                    fullname:response.fullname
                 });
 
                 setUrl(bataurl)
@@ -219,9 +236,9 @@ const LoginScreen = () => {
                 {(isLoggedIn ?
 
                     <WebViewScreen
-                        url={url}
-                        userData={userData}
-                        onNavigationStateChange={handleNavigationChange} />
+                    url={url}
+                    userData={userData}
+                    onNavigationStateChange={handleNavigationChange}/>
                     :
                     <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
                         <KeyboardAwareScrollView
@@ -342,7 +359,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
 
-    input: {
+    input:{
         height: 55,
         width: '100%',
         paddingVertical: 10,
