@@ -1,72 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import {
-  BackHandler,
-  Alert,
-  StatusBar,
-  StyleSheet,
-  View,
-  Linking,
-} from 'react-native';
+import { View, StatusBar, ActivityIndicator,Text,StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import WebView from 'react-native-webview';
 import { WHITE } from './component/color';
 import BataImageGif from './component/BataImageGif';
-import LoginScreen from './component/LoginScreen';
-import DeviceInfo from 'react-native-device-info';
-import firestore from '@react-native-firebase/firestore';
+import { prime_url } from './component/environment';
+
 
 const App = () => {
   const [showSplash, setShowSplash] = useState(true);
-  const [updatedVersion, setUpdatedVersion] = useState('');
-  const [showPopup, setShowPopup] = useState(false);
-  console.log(showPopup,"...aa")
+  const [loading, setLoading] = useState(false);
+  const webViewRef = React.createRef();
+  const INJECTED_JAVASCRIPT = `window.open = function() {};`;
 
-  const installedVersion = DeviceInfo.getVersion();
+  useEffect(() => {
+    // Simulate a delay to show the splash screen for a few seconds
+    const splashTimeout = setTimeout(() => {
+      setShowSplash(false);
+    }, 2000); // Adjust the duration as needed
 
-  const getVersions = async () => {
-    const users = await firestore().collection('versions').get();
-    const versionFromFirestore = users.docs[0]._data.version;
-    console.log(versionFromFirestore,"......111");
-    if (versionFromFirestore !== installedVersion) {
-      setUpdatedVersion(versionFromFirestore);
-      setShowPopup(true); // Set the condition to true to show the popup
-    } else {
-      setShowPopup(false); // Set the condition to false to hide the popup
-    }
+    // Cleanup the timeout to avoid memory leaks
+    return () => clearTimeout(splashTimeout);
+  }, []);
+
+  const handleLoadStart = () => {
+    setLoading(true);
   };
 
-  useEffect(() => {
-    getVersions();
-  }, []);
-
-  useEffect(() => {
-    if (showPopup) {
-      Alert.alert(
-        'Update Required',
-        'New version ' + updatedVersion + ' available',
-        [
-          {
-            text: 'Update',
-            onPress: () => {
-              // Open the respective app store for the update
-              // For Android
-              Linking.openURL(
-                'https://play.google.com/store/apps/details?id=com.tgcbata'
-              );
-
-              // For iOS
-              // Linking.openURL('https://apps.apple.com/app/idyourappid');
-            },
-          },
-        ]
-      );
-    }
-  }, [showPopup]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setShowSplash(false);
-    }, 1650);
-  }, []);
+  const handleLoadEnd = () => {
+    setLoading(false);
+  };
 
   return (
     <>
@@ -75,8 +38,32 @@ const App = () => {
       ) : (
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
-          <View style={styles.container}>
-            <LoginScreen />
+          <View style={{ flex: 1 }}>
+            <WebView
+              ref={webViewRef}
+              source={{ uri: prime_url }}
+              onLoadStart={handleLoadStart}
+              onLoadEnd={handleLoadEnd}
+              injectedJavaScript={INJECTED_JAVASCRIPT}
+              scrollEnabled
+              setSupportMultipleWindows={false}
+              style={{ flex: 1 }}
+            />
+            {loading && (
+              <View
+                style={{
+                  ...StyleSheet.absoluteFillObject,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                }}
+              >
+                <ActivityIndicator size="large" color="#FFFFFF" />
+                <Text style={{ color: '#FFFFFF', marginTop: 10 }}>
+                  Loading content...
+                </Text>
+              </View>
+            )}
           </View>
         </SafeAreaProvider>
       )}
@@ -84,11 +71,5 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: WHITE,
-  },
-});
 
 export default App;
