@@ -6,6 +6,8 @@ import BataImageGif from './component/BataImageGif';
 import LoginScreen from './component/LoginScreen';
 import DeviceInfo from 'react-native-device-info';
 import firestore from '@react-native-firebase/firestore';
+import WebView from 'react-native-webview';
+import { prime_url } from './component/environment';
 
 const App = () => {
   const isMounted = useRef(true);
@@ -13,6 +15,40 @@ const App = () => {
   const [updatedVersion, setUpdatedVersion] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [loadingVersions, setLoadingVersions] = useState(true);
+  const webViewRef = useRef(null);
+  // const webViewRef = React.useRef(null);
+  const [loading, setLoading] = useState(false);
+  const INJECTED_JAVASCRIPT = `window.close = function() {};`;
+  const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+
+  useEffect(() => {
+    const handleBackPress = () => {
+      if (webViewRef.current) {
+        webViewRef.current.goBack(); // Go back in WebView if possible
+        return true;
+      } else {
+        if (showExitConfirmation) {
+          // Handle exit confirmation actions if needed
+          setShowExitConfirmation(false);
+        } else {
+          setShowExitConfirmation(true);
+        }
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      handleBackPress
+    );
+
+    return () => backHandler.remove(); // Cleanup the event listener on component unmount
+  }, [showExitConfirmation]);
+
+  const handleExitConfirmation = () => {
+    // Handle exit confirmation actions if needed
+    setShowExitConfirmation(false);
+  };
 
   const installedVersion = DeviceInfo.getVersion();
 
@@ -21,7 +57,7 @@ const App = () => {
       const users = await firestore().collection('versions').get();
       const versionFromFirestore = users.docs[0]._data.version;
       console.log(versionFromFirestore, '......111');
-      
+
       if (isMounted.current) {
         setUpdatedVersion(versionFromFirestore);
 
@@ -82,7 +118,53 @@ const App = () => {
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
           <View style={styles.container}>
-            <LoginScreen />
+            {/* <LoginScreen /> */}
+            <>
+              {/* <WebView
+         ref={webViewRef}
+         source={{ uri: url }}
+         onLoadStart={() => setLoading(true)}
+         onLoadEnd={() => setLoading(false)}
+         onLoad={() => setLoading(false)}
+         style={{ flex: 1 }}
+        // injectedJavaScript={INJECTED_JAVASCRIPT}
+         injectedJavaScript={INJECTED_JAVASCRIPt_Close}
+         scrollEnabled
+        //  onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+         setSupportMultipleWindows={false} // This prevents redirecting to a new browser window
+         // onNavigationStateChange={onNavigationStateChange}
+      /> */}
+
+
+              <WebView
+                ref={webViewRef}
+                source={{ uri: prime_url }}
+                onLoadStart={() => setLoading(true)}
+                onLoadEnd={() => setLoading(false)}
+                onLoad={() => setLoading(false)}
+                style={{ flex: 1 }}
+                injectedJavaScript={INJECTED_JAVASCRIPT}
+                scrollEnabled
+                setSupportMultipleWindows={false}
+              // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+              // onNavigationStateChange={onNavigationStateChange}
+              />
+
+              {showExitConfirmation && (
+                Alert.alert(
+                  "Hold on",
+                  "Please use the app back button or home button to navigate",
+                  [
+                    {
+                      text: "OK",
+                      onPress: handleExitConfirmation,
+                      style: "cancel"
+                    },
+                    { text: 'YES', onPress: () => BackHandler.exitApp() },
+                  ]
+                )
+              )}
+            </>
           </View>
         </SafeAreaProvider>
       )}
