@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  BackHandler,
-  Alert,
-  StatusBar,
-  StyleSheet,
-  View,
-  Linking,
-} from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { BackHandler, Alert, StatusBar, StyleSheet, View, Linking } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WHITE } from './component/color';
 import BataImageGif from './component/BataImageGif';
@@ -15,31 +8,49 @@ import DeviceInfo from 'react-native-device-info';
 import firestore from '@react-native-firebase/firestore';
 
 const App = () => {
+  const isMounted = useRef(true);
   const [showSplash, setShowSplash] = useState(true);
   const [updatedVersion, setUpdatedVersion] = useState('');
   const [showPopup, setShowPopup] = useState(false);
-  console.log(showPopup,"...aa")
+  const [loadingVersions, setLoadingVersions] = useState(true);
 
   const installedVersion = DeviceInfo.getVersion();
 
   const getVersions = async () => {
-    const users = await firestore().collection('versions').get();
-    const versionFromFirestore = users.docs[0]._data.version;
-    console.log(versionFromFirestore,"......111");
-    if (versionFromFirestore !== installedVersion) {
-      setUpdatedVersion(versionFromFirestore);
-      setShowPopup(true); // Set the condition to true to show the popup
-    } else {
-      setShowPopup(false); // Set the condition to false to hide the popup
+    try {
+      const users = await firestore().collection('versions').get();
+      const versionFromFirestore = users.docs[0]._data.version;
+      console.log(versionFromFirestore, '......111');
+      
+      if (isMounted.current) {
+        setUpdatedVersion(versionFromFirestore);
+
+        if (versionFromFirestore !== installedVersion) {
+          setShowPopup(true);
+        } else {
+          setShowPopup(false);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching versions:', error);
+    } finally {
+      if (isMounted.current) {
+        setLoadingVersions(false);
+      }
     }
   };
 
   useEffect(() => {
     getVersions();
+
+    // Cleanup function
+    return () => {
+      isMounted.current = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (showPopup) {
+    if (showPopup && !loadingVersions && isMounted.current) {
       Alert.alert(
         'Update Required',
         'New version ' + updatedVersion + ' available',
@@ -47,20 +58,15 @@ const App = () => {
           {
             text: 'Update',
             onPress: () => {
-              // Open the respective app store for the update
-              // For Android
               Linking.openURL(
                 'https://play.google.com/store/apps/details?id=com.tgcbata'
               );
-
-              // For iOS
-              // Linking.openURL('https://apps.apple.com/app/idyourappid');
             },
           },
         ]
       );
     }
-  }, [showPopup]);
+  }, [showPopup, loadingVersions, updatedVersion]);
 
   useEffect(() => {
     setTimeout(() => {
