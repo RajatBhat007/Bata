@@ -8,6 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 import firestore from '@react-native-firebase/firestore';
 import WebView from 'react-native-webview';
 import { prime_url } from './component/environment';
+import { PERMISSIONS } from "react-native-permissions";
 
 const App = () => {
   const isMounted = useRef(true);
@@ -109,6 +110,27 @@ const App = () => {
       setShowSplash(false);
     }, 1650);
   }, []);
+  const [hasPermission, setHasPermission] = useState(false);
+
+  useEffect(() => {
+    requestCameraPermission();
+  }, []);
+
+  const requestCameraPermission = async () => {
+    const status = await getCameraPermissions();
+    setHasPermission(status);
+  };
+
+  const getCameraPermissions = async () => {
+    const status = await request(
+      Platform.select({
+        android: PERMISSIONS.ANDROID.CAMERA,
+        ios: PERMISSIONS.IOS.CAMERA,
+      }),
+    );
+
+    return status === RESULTS.GRANTED;
+  };
 
   return (
     <>
@@ -139,15 +161,15 @@ const App = () => {
               <WebView
                 ref={webViewRef}
                 source={{ uri: prime_url }}
-                onLoadStart={() => setLoading(true)}
-                onLoadEnd={() => setLoading(false)}
-                onLoad={() => setLoading(false)}
-                style={{ flex: 1 }}
-                injectedJavaScript={INJECTED_JAVASCRIPT}
-                scrollEnabled
-                setSupportMultipleWindows={false}
-              // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-              // onNavigationStateChange={onNavigationStateChange}
+              //   onLoadStart={() => setLoading(true)}
+              //   onLoadEnd={() => setLoading(false)}
+              //   onLoad={() => setLoading(false)}
+              //   style={{ flex: 1 }}
+              //   injectedJavaScript={INJECTED_JAVASCRIPT}
+              //   scrollEnabled
+              //   setSupportMultipleWindows={false}
+              // // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
+              // // onNavigationStateChange={onNavigationStateChange}
               />
 
               {showExitConfirmation && (
