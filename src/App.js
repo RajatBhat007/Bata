@@ -110,27 +110,27 @@ const App = () => {
       setShowSplash(false);
     }, 1650);
   }, []);
-  const [hasPermission, setHasPermission] = useState(false);
+  // const [hasPermission, setHasPermission] = useState(false);
 
-  useEffect(() => {
-    requestCameraPermission();
-  }, []);
+  // useEffect(() => {
+  //   requestCameraPermission();
+  // }, []);
 
-  const requestCameraPermission = async () => {
-    const status = await getCameraPermissions();
-    setHasPermission(status);
-  };
+  // const requestCameraPermission = async () => {
+  //   const status = await getCameraPermissions();
+  //   setHasPermission(status);
+  // };
 
-  const getCameraPermissions = async () => {
-    const status = await request(
-      Platform.select({
-        android: PERMISSIONS.ANDROID.CAMERA,
-        ios: PERMISSIONS.IOS.CAMERA,
-      }),
-    );
+  // const getCameraPermissions = async () => {
+  //   const status = await request(
+  //     Platform.select({
+  //       android: PERMISSIONS.ANDROID.CAMERA,
+  //       ios: PERMISSIONS.IOS.CAMERA,
+  //     }),
+  //   );
 
-    return status === RESULTS.GRANTED;
-  };
+  //   return status === RESULTS.GRANTED;
+  // };
 
   return (
     <>
