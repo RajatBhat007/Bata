@@ -8,7 +8,7 @@ import DeviceInfo from 'react-native-device-info';
 import firestore from '@react-native-firebase/firestore';
 import WebView from 'react-native-webview';
 import { prime_url } from './component/environment';
-import { PERMISSIONS } from "react-native-permissions";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const isMounted = useRef(true);
@@ -17,9 +17,6 @@ const App = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [loadingVersions, setLoadingVersions] = useState(true);
   const webViewRef = useRef(null);
-  // const webViewRef = React.useRef(null);
-  const [loading, setLoading] = useState(false);
-  const INJECTED_JAVASCRIPT = `window.close = function() {};`;
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
 
   useEffect(() => {
@@ -27,13 +24,12 @@ const App = () => {
       if (webViewRef.current) {
         webViewRef.current.goBack(); // Go back in WebView if possible
         return true;
+      } else if (showExitConfirmation) {
+        setShowExitConfirmation(false); // Close exit confirmation if visible
+        return true;
       } else {
-        if (showExitConfirmation) {
-          // Handle exit confirmation actions if needed
-          setShowExitConfirmation(false);
-        } else {
-          setShowExitConfirmation(true);
-        }
+        // Show exit confirmation if not in WebView and not already confirmed
+        setShowExitConfirmation(true);
         return true;
       }
     };
@@ -51,6 +47,23 @@ const App = () => {
     setShowExitConfirmation(false);
   };
 
+  const handleBackPress = () => {
+    if (webViewRef.current) {
+      if (webViewRef.current.canGoBack()) {
+        webViewRef.current.goBack();
+      } else {
+        // Handle exit confirmation here
+      }
+      return true;
+    }
+    return false;
+  };
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
   const installedVersion = DeviceInfo.getVersion();
 
   const getVersions = async () => {
@@ -110,27 +123,28 @@ const App = () => {
       setShowSplash(false);
     }, 1650);
   }, []);
-  // const [hasPermission, setHasPermission] = useState(false);
 
-  // useEffect(() => {
-  //   requestCameraPermission();
-  // }, []);
+  const authenticateUser = async () => {
+    try {
+      // Check if the user is already authenticated
+      const isUserAuthenticated = await AsyncStorage.getItem('isUserAuthenticated');
 
-  // const requestCameraPermission = async () => {
-  //   const status = await getCameraPermissions();
-  //   setHasPermission(status);
-  // };
+      if (isUserAuthenticated) {
+        // If authenticated, proceed with WebView
+        setShowSplash(false);
+      } else {
+        // If not authenticated, show login screen
+        setShowSplash(true);
+        // You can redirect to the login screen or handle authentication flow accordingly
+      }
+    } catch (error) {
+      console.error('Error checking authentication:', error);
+    }
+  };
 
-  // const getCameraPermissions = async () => {
-  //   const status = await request(
-  //     Platform.select({
-  //       android: PERMISSIONS.ANDROID.CAMERA,
-  //       ios: PERMISSIONS.IOS.CAMERA,
-  //     }),
-  //   );
-
-  //   return status === RESULTS.GRANTED;
-  // };
+  useEffect(() => {
+    authenticateUser();
+  }, []);
 
   return (
     <>
@@ -140,38 +154,12 @@ const App = () => {
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
           <View style={styles.container}>
-            {/* <LoginScreen /> */}
             <>
-              {/* <WebView
-         ref={webViewRef}
-         source={{ uri: url }}
-         onLoadStart={() => setLoading(true)}
-         onLoadEnd={() => setLoading(false)}
-         onLoad={() => setLoading(false)}
-         style={{ flex: 1 }}
-        // injectedJavaScript={INJECTED_JAVASCRIPT}
-         injectedJavaScript={INJECTED_JAVASCRIPt_Close}
-         scrollEnabled
-        //  onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-         setSupportMultipleWindows={false} // This prevents redirecting to a new browser window
-         // onNavigationStateChange={onNavigationStateChange}
-      /> */}
-
-
               <WebView
                 ref={webViewRef}
                 source={{ uri: prime_url }}
-              //   onLoadStart={() => setLoading(true)}
-              //   onLoadEnd={() => setLoading(false)}
-              //   onLoad={() => setLoading(false)}
-              //   style={{ flex: 1 }}
-              //   injectedJavaScript={INJECTED_JAVASCRIPT}
-              //   scrollEnabled
-              //   setSupportMultipleWindows={false}
-              // // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-              // // onNavigationStateChange={onNavigationStateChange}
-              />
 
+              />
               {showExitConfirmation && (
                 Alert.alert(
                   "Hold on",
