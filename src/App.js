@@ -3,7 +3,6 @@ import { BackHandler, Alert, StatusBar, StyleSheet, View, Linking } from 'react-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WHITE } from './component/color';
 import BataImageGif from './component/BataImageGif';
-import LoginScreen from './component/LoginScreen';
 import DeviceInfo from 'react-native-device-info';
 import firestore from '@react-native-firebase/firestore';
 import WebView from 'react-native-webview';
@@ -12,18 +11,83 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const App = () => {
   const isMounted = useRef(true);
+  const webView = useRef();
   const [showSplash, setShowSplash] = useState(true);
   const [updatedVersion, setUpdatedVersion] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [loadingVersions, setLoadingVersions] = useState(true);
   const webViewRef = useRef(null);
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+  const [webViewKey, setWebViewKey] = useState(1); // Initialize with a key valu
+
+  // useEffect(() => {
+  //   const handleBackPress = () => {
+  //     if (webViewRef.current) {
+  //       webViewRef.current.goBack(); // Go back in WebView if possible
+  //       return true;
+  //     } else if (showExitConfirmation) {
+  //       setShowExitConfirmation(false); // Close exit confirmation if visible
+  //       return true;
+  //     } else {
+  //       // Show exit confirmation if not in WebView and not already confirmed
+  //       setShowExitConfirmation(true);
+  //       return true;
+  //     }
+  //   };
+
+  //   const backHandler = BackHandler.addEventListener(
+  //     'hardwareBackPress',
+  //     handleBackPress
+  //   );
+
+  //   return () => backHandler.remove(); // Cleanup the event listener on component unmount
+  // }, [showExitConfirmation]);
+  useEffect(() => {
+    const authenticateUser = async () => {
+      try {
+        const isUserAuthenticated = await AsyncStorage.getItem('isUserAuthenticated');
+        const loginTimestamp = await AsyncStorage.getItem('loginTimestamp');
+    
+        console.log('isUserAuthenticated:', isUserAuthenticated);
+        console.log('loginTimestamp:', loginTimestamp);
+  
+        if (isUserAuthenticated || process.env.NODE_ENV === 'development') {
+          // Check if the user has logged in within the last 10 years
+          if (loginTimestamp && Date.now() - parseInt(loginTimestamp, 10) < 10 * 365 * 24 * 60 * 60 * 1000) {
+            // If logged in within the last 10 years, navigate to the dashboard directly
+            navigateToDashboard();
+          } else {
+            // If not logged in within the last 10 years, show splash screen
+            setShowSplash(true);
+            // Set the login timestamp for the next 10 years
+            await AsyncStorage.setItem('loginTimestamp', Date.now().toString());
+          }
+        } else {
+          // If not authenticated, show splash screen
+          setShowSplash(true);
+        }
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+      }
+    };
+  
+    const navigateToDashboard = () => {
+      // Navigate to the dashboard screen
+      // Replace the following line with your navigation logic
+      console.log('Navigating to Dashboard');
+    };
+  
+    authenticateUser();
+  }, []);
+  
 
   useEffect(() => {
     const handleBackPress = () => {
       if (webViewRef.current) {
-        webViewRef.current.goBack(); // Go back in WebView if possible
-        return true;
+        if (webViewRef.current.canGoBack) {
+          webViewRef.current.goBack(); // Go back in WebView if possible
+          return true;
+        }
       } else if (showExitConfirmation) {
         setShowExitConfirmation(false); // Close exit confirmation if visible
         return true;
@@ -34,26 +98,83 @@ const App = () => {
       }
     };
 
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackPress);
+
+    return () => {
+      backHandler.remove();
+      isMounted.current = false;
+    };
+  }, [showExitConfirmation]);
+
+  useEffect(() => {
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
-      handleBackPress
+      handleExitOrBackPress
     );
 
     return () => backHandler.remove(); // Cleanup the event listener on component unmount
   }, [showExitConfirmation]);
 
+  useEffect(() => {
+    const backAction = () => {
+      if (webViewRef.current) {
+        webViewRef.current.goBack(); // Go back in WebView if possible
+        return true;
+      } else {
+        Alert.alert('Hold on!', 'Are you sure you want to exit?', [
+          {
+            text: 'Cancel',
+            onPress: () => null,
+            style: 'cancel',
+          },
+          { text: 'YES', onPress: () => BackHandler.exitApp() },
+        ]);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const handleExitOrBackPress = () => {
+    if (webViewRef.current) {
+      webViewRef.current.goBack();
+      return true;
+    } else if (showExitConfirmation) {
+      setShowExitConfirmation(false);
+      return true;
+    } else {
+      setShowExitConfirmation(true);
+      return true;
+    }
+  };
+
   const handleExitConfirmation = () => {
-    // Handle exit confirmation actions if needed
     setShowExitConfirmation(false);
   };
 
-  const handleBackPress = () => {
+  // const handleNavigationStateChange = (navState) => {
+  //   setShowExitConfirmation(!navState.canGoBack);
+  // };
+
+  const handleNavigationStateChange = (navState) => {
+    if (navState.canGoBack) {
+      // If WebView can go back, enable the system back button
+      BackHandler.addEventListener('hardwareBackPress', handleBackPressInWebView);
+    } else {
+      // If WebView cannot go back, disable the system back button
+      BackHandler.removeEventListener('hardwareBackPress', handleBackPressInWebView);
+    }
+  };
+
+  const handleBackPressInWebView = () => {
     if (webViewRef.current) {
-      if (webViewRef.current.canGoBack()) {
-        webViewRef.current.goBack();
-      } else {
-        // Handle exit confirmation here
-      }
+      webViewRef.current.goBack();
       return true;
     }
     return false;
@@ -64,6 +185,7 @@ const App = () => {
       isMounted.current = false;
     };
   }, []);
+
   const installedVersion = DeviceInfo.getVersion();
 
   const getVersions = async () => {
@@ -92,11 +214,6 @@ const App = () => {
 
   useEffect(() => {
     getVersions();
-
-    // Cleanup function
-    return () => {
-      isMounted.current = false;
-    };
   }, []);
 
   useEffect(() => {
@@ -124,27 +241,7 @@ const App = () => {
     }, 1650);
   }, []);
 
-  const authenticateUser = async () => {
-    try {
-      // Check if the user is already authenticated
-      const isUserAuthenticated = await AsyncStorage.getItem('isUserAuthenticated');
-
-      if (isUserAuthenticated) {
-        // If authenticated, proceed with WebView
-        setShowSplash(false);
-      } else {
-        // If not authenticated, show login screen
-        setShowSplash(true);
-        // You can redirect to the login screen or handle authentication flow accordingly
-      }
-    } catch (error) {
-      console.error('Error checking authentication:', error);
-    }
-  };
-
-  useEffect(() => {
-    authenticateUser();
-  }, []);
+  
 
   return (
     <>
@@ -156,9 +253,12 @@ const App = () => {
           <View style={styles.container}>
             <>
               <WebView
+                key={webViewKey} // Reload WebView when the key changes
                 ref={webViewRef}
                 source={{ uri: prime_url }}
-
+                onNavigationStateChange={handleNavigationStateChange}
+                scrollEnabled
+                setSupportMultipleWindows={false}
               />
               {showExitConfirmation && (
                 Alert.alert(
@@ -190,3 +290,7 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+
+
+
