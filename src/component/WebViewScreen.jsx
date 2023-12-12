@@ -1,15 +1,22 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useRef } from 'react';
 import { BackHandler, Alert } from 'react-native';
 import WebView from 'react-native-webview';
+import LoginScreen from './LoginScreen';
 
-const WebViewScreen = ({ url, userData, onNavigationStateChange }) => {
+const WebViewScreen = ({ url, userData, onNavigationStateChange,navigation }) => {
   const webViewRef = useRef(null);
   // const webViewRef = React.useRef(null);
   const [loading, setLoading] = useState(false);
   const INJECTED_JAVASCRIPT = `window.close = function() {};`;
   const [showExitConfirmation, setShowExitConfirmation] = useState(false);
+  const [isLoggedOut, setIsLoggedOut] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   useEffect(() => {
+    console.log('isloggedOut',isLoggedOut);
+    console.log('he;ll');
+    console.log('update',url);
     const handleBackPress = () => {
       if (webViewRef.current) {
         webViewRef.current.goBack(); // Go back in WebView if possible
@@ -37,6 +44,20 @@ const WebViewScreen = ({ url, userData, onNavigationStateChange }) => {
     // Handle exit confirmation actions if needed
     setShowExitConfirmation(false);
   };
+
+  const handleNavigationChange = (navState) => {
+    const { url: newUrl } = navState;
+    console.log(newUrl);
+
+    if(newUrl=='https://www.m2ost.in/M2OST_Console_PriME/'){
+        console.log('login false');
+    //  <LoginScreen/>
+    setIsLoggedOut(true)
+     console.log('login false123');
+
+    }
+ 
+};
 //   const INJECTED_JAVASCRIPt_Close = `
 //   // Your injected JavaScript code here
 
@@ -105,38 +126,30 @@ const WebViewScreen = ({ url, userData, onNavigationStateChange }) => {
   
 
   return (
-    <>
-      {/* <WebView
-         ref={webViewRef}
-         source={{ uri: url }}
-         onLoadStart={() => setLoading(true)}
-         onLoadEnd={() => setLoading(false)}
-         onLoad={() => setLoading(false)}
-         style={{ flex: 1 }}
-        // injectedJavaScript={INJECTED_JAVASCRIPT}
-         injectedJavaScript={INJECTED_JAVASCRIPt_Close}
-         scrollEnabled
-        //  onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
-         setSupportMultipleWindows={false} // This prevents redirecting to a new browser window
-         // onNavigationStateChange={onNavigationStateChange}
-      /> */}
-      
-
-<WebView
+    <>      
+     {(isLoggedOut ?
+    <LoginScreen 
+    LoggedIn={isLoggedIn}
+    />
+    :
+    <WebView
     ref={webViewRef}
     source={{ uri: url }}
-    onLoadStart={() => setLoading(true)}
-    onLoadEnd={() => setLoading(false)}
-    onLoad={() => setLoading(false)}
+    // onLoadStart={() => setLoading(true)}
+    // onLoadEnd={() => setLoading(false)}
+    // onLoad={() => setLoading(false)}
     style={{ flex: 1 }}
     injectedJavaScript={INJECTED_JAVASCRIPT}
     scrollEnabled
-    setSupportMultipleWindows={false}
+    onNavigationStateChange={handleNavigationChange}
+    // setSupportMultipleWindows={false}
     // onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
     // onNavigationStateChange={onNavigationStateChange}
   />
+     )}
 
-      {showExitConfirmation && (
+
+      {/* {showExitConfirmation && (
         Alert.alert(
           "Hold on",
           "Please use the app back button or home button to navigate",
@@ -149,7 +162,7 @@ const WebViewScreen = ({ url, userData, onNavigationStateChange }) => {
             {text: 'YES', onPress: () => BackHandler.exitApp()},
           ]
         )
-      )}
+      )} */}
     </>
   );
 };

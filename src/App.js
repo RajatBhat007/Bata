@@ -8,6 +8,7 @@ import firestore from '@react-native-firebase/firestore';
 import WebView from 'react-native-webview';
 import { prime_url } from './component/environment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoginScreen from './component/LoginScreen';
 
 const App = () => {
   const isMounted = useRef(true);
@@ -251,14 +252,13 @@ const App = () => {
         <SafeAreaProvider>
           <StatusBar backgroundColor={WHITE} barStyle="dark-content" />
           <View style={styles.container}>
-            <>
+            {/* <>
               <WebView
                 key={webViewKey} // Reload WebView when the key changes
                 ref={webViewRef}
                 source={{ uri: prime_url }}
                 onNavigationStateChange={handleNavigationStateChange}
                 scrollEnabled
-                setSupportMultipleWindows={false}
               />
               {showExitConfirmation && (
                 Alert.alert(
@@ -274,7 +274,8 @@ const App = () => {
                   ]
                 )
               )}
-            </>
+            </> */}
+            <LoginScreen/>
           </View>
         </SafeAreaProvider>
       )}

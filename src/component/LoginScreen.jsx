@@ -14,7 +14,9 @@ import WebViewScreen from './WebViewScreen';
 
 const backgroundImage = require('../assets/image1.png');
 
-const LoginScreen = () => {
+const LoginScreen = ({LoggedIn}) => {
+    console.log(LoggedIn ,'LoggedIn value from web screen');
+    const[LoggedInNew ,setLoggedInNew]=useState(LoggedIn);
     const [username, setUsername] = useState('');
     console.log(username, ".....11");
     const [password, setPassword] = useState('');
@@ -73,6 +75,7 @@ const LoginScreen = () => {
     const handleLogin = async () => {
         // Simulate login logic
         setIsLoggedIn(true);
+        setLoggedInNew(false)
         // Set the last login date to a future date (10 years from now)
         const futureDate = new Date();
         futureDate.setFullYear(futureDate.getFullYear() + 10);
@@ -85,7 +88,18 @@ const LoginScreen = () => {
         setIsLoading(false);
     };
 
+  useEffect(()=>{
+    if(LoggedInNew){
+        console.log(LoggedInNew,'12345555');
+        setIsLoggedIn(false)
+        // setLoggedInNew(false)
+    }
+    else{
+        // setIsLoggedIn(true)
+        setLoggedInNew(false)
 
+    }
+  })
     useEffect(() => {
         const checkLastLoginDate = async () => {
             const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
@@ -188,6 +202,7 @@ const LoginScreen = () => {
         setUsername('')
         setPassword('')
         setIsLoggedIn(false)
+        setLoggedInNew(false)
 
     };
 
@@ -216,8 +231,14 @@ const LoginScreen = () => {
     }
 
     const handleNavigationChange = (navState) => {
-        const { url: newUrl } = navState
-        if (newUrl.startsWith('https://tgc.onelink.me')) {
+        const { url: newUrl } = navState;
+        console.log(newUrl);
+
+        if(newUrl==='https://www.m2ost.in/M2OST_Console_PriME'){
+            console.log('login false');
+        setIsLoading(false)
+        }
+       else if (newUrl.startsWith('https://tgc.onelink.me')) {
             console.log(newUrl, "....ww");
             // Redirect to the app using deep linking
             const deepLinkURL = `https://tgc.onelink.me/1Ut0/jouhje9i?Orgid=15&UID=${userData.UserName}&name=${userData.fullname}`;
