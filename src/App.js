@@ -118,29 +118,23 @@ const App = () => {
 
   useEffect(() => {
     const backAction = () => {
-      if (webViewRef.current) {
-        webViewRef.current.goBack(); // Go back in WebView if possible
+      if (webViewRef.current && webViewRef.current.canGoBack()) {
+        // Go back in WebView if possible
+        webViewRef.current.goBack();
         return true;
       } else {
-        Alert.alert('Hold on!', 'Are you sure you want to exit?', [
-          {
-            text: 'Cancel',
-            onPress: () => null,
-            style: 'cancel',
-          },
-          { text: 'YES', onPress: () => BackHandler.exitApp() },
-        ]);
-        return true;
+        // If no history in WebView, do nothing
+        return false;
       }
     };
-
+  
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
     );
-
+  
     return () => backHandler.remove();
-  }, []);
+  }, [webViewRef]);
 
   const handleExitOrBackPress = () => {
     if (webViewRef.current) {
