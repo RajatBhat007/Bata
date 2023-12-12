@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking,BackHandler, ActivityIndicator} from 'react-native'; // Import KeyboardAvoidingView and Platform
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking, BackHandler, ActivityIndicator, Dimensions } from 'react-native'; // Import KeyboardAvoidingView and Platform
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { BGRED, DARK_BLACK } from './color';
+import { BGRED, BLACK, DARK_BLACK, GRAY_BLACK, WHITE } from './color';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
 import { Url, bataUrllogin, prime_url } from './environment';
@@ -11,12 +11,12 @@ import HideEyeIcon from './constant/svg/HideEyeIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // or any other storage library you prefer
 import WebViewScreen from './WebViewScreen';
 
+const { width, height } = Dimensions.get('window');
+const backgroundImage = require('../assets/batalogin.png');
 
-const backgroundImage = require('../assets/image1.png');
-
-const LoginScreen = ({LoggedIn}) => {
-    console.log(LoggedIn ,'LoggedIn value from web screen');
-    const[LoggedInNew ,setLoggedInNew]=useState(LoggedIn);
+const LoginScreen = ({ LoggedIn }) => {
+    console.log(LoggedIn, 'LoggedIn value from web screen');
+    const [LoggedInNew, setLoggedInNew] = useState(LoggedIn);
     const [username, setUsername] = useState('');
     console.log(username, ".....11");
     const [password, setPassword] = useState('');
@@ -31,7 +31,7 @@ const LoginScreen = ({LoggedIn}) => {
         UserName: "",
         UserID: "",
         ORGID: "",
-        fullname:""
+        fullname: ""
     });
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -88,18 +88,18 @@ const LoginScreen = ({LoggedIn}) => {
         setIsLoading(false);
     };
 
-  useEffect(()=>{
-    if(LoggedInNew){
-        console.log(LoggedInNew,'12345555');
-        setIsLoggedIn(false)
-        // setLoggedInNew(false)
-    }
-    else{
-        // setIsLoggedIn(true)
-        setLoggedInNew(false)
+    useEffect(() => {
+        if (LoggedInNew) {
+            console.log(LoggedInNew, '12345555');
+            setIsLoggedIn(false)
+            // setLoggedInNew(false)
+        }
+        else {
+            // setIsLoggedIn(true)
+            setLoggedInNew(false)
 
-    }
-  })
+        }
+    })
     useEffect(() => {
         const checkLastLoginDate = async () => {
             const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
@@ -118,7 +118,7 @@ const LoginScreen = ({LoggedIn}) => {
                 }
             }
         };
-    
+
         checkLastLoginDate();
     }, []);
 
@@ -169,7 +169,7 @@ const LoginScreen = ({LoggedIn}) => {
                     UserName: response.UserName,
                     UserID: response.UserID,
                     ORGID: response.ORGID,
-                    fullname:response.fullname
+                    fullname: response.fullname
                 });
 
                 setUrl(bataurl)
@@ -234,11 +234,11 @@ const LoginScreen = ({LoggedIn}) => {
         const { url: newUrl } = navState;
         console.log(newUrl);
 
-        if(newUrl==='https://www.m2ost.in/M2OST_Console_PriME'){
+        if (newUrl === 'https://www.m2ost.in/M2OST_Console_PriME') {
             console.log('login false');
-        setIsLoading(false)
+            setIsLoading(false)
         }
-       else if (newUrl.startsWith('https://tgc.onelink.me')) {
+        else if (newUrl.startsWith('https://tgc.onelink.me')) {
             console.log(newUrl, "....ww");
             // Redirect to the app using deep linking
             const deepLinkURL = `https://tgc.onelink.me/1Ut0/jouhje9i?Orgid=15&UID=${userData.UserName}&name=${userData.fullname}`;
@@ -257,88 +257,85 @@ const LoginScreen = ({LoggedIn}) => {
                 {(isLoggedIn ?
 
                     <WebViewScreen
-                    url={url}
-                    userData={userData}
-                    onNavigationStateChange={handleNavigationChange}/>
+                        url={url}
+                        userData={userData}
+                        onNavigationStateChange={handleNavigationChange} />
                     :
                     <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
                         <KeyboardAwareScrollView
                             contentContainerStyle={styles.scrollViewContainer}
                             keyboardShouldPersistTaps="handled"
                         >
-                            <View style={styles.imageContainer}>
-                                <ImageBackground
-                                    source={require('../assets/image5.png')}
-                                    style={styles.image}
-                                    imageStyle={{ borderRadius: 15 }}
-                                >
-                                    <View style={{ marginTop: "40%" }}>
-                                        <View>
-                                            <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", alignItems: "center", marginLeft: 20, fontWeight: "bold" }}>Login</Text>
-                                        </View>
-                                        <View style={WalkStyle.formFirstRow}>
-                                            <View style={{ width: '90%' }}>
-                                                <View style={WalkStyle.formTxt}>
-                                                    <Text style={WalkStyle.commonTxtName}>User Id</Text>
-                                                </View>
-                                                <View style={WalkStyle.viewElement}>
-                                                    <TextInput
-                                                        style={[styles.input]}
-                                                        placeholder="User Id"
-                                                        placeholderTextColor="#34437a4d"
-                                                        keyboardType="default"
-                                                        maxLength={30}
-                                                        value={username}
-                                                        onChangeText={txt => {
-                                                            setUsername(txt)
-                                                        }}
-                                                    />
-                                                </View>
+                            <View style={styles.card}>
+                                <View>
+                                    <View>
+                                        <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", textAlign: "center", fontWeight: "bold" }}>Login</Text>
+                                        <Text style={{ color: BLACK, fontSize: 16, justifyContent: "center", textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Login in to stay connected</Text>
+
+                                    </View>
+                                    <View style={WalkStyle.formFirstRow}>
+                                        <View style={{ width: '100%' }}>
+                                            <View style={WalkStyle.formTxt}>
+                                                <Text style={WalkStyle.commonTxtName}>User Id</Text>
+                                            </View>
+                                            <View style={WalkStyle.viewElement}>
+                                                <TextInput
+                                                    style={[styles.input]}
+                                                    placeholder="User Id"
+                                                    placeholderTextColor="#34437a4d"
+                                                    keyboardType="default"
+                                                    maxLength={30}
+                                                    value={username}
+                                                    onChangeText={txt => {
+                                                        setUsername(txt)
+                                                    }}
+                                                />
                                             </View>
                                         </View>
-                                        <View style={WalkStyle.formFirstRow}>
-                                            <View style={{ width: '90%' }}>
-                                                <View style={WalkStyle.formTxt}>
-                                                    <Text style={WalkStyle.commonTxtName}>Password</Text>
-                                                </View>
-                                                <View style={WalkStyle.viewElement}>
-                                                    <TextInput
-                                                        style={[styles.input]}
-                                                        placeholder="Password"
-                                                        placeholderTextColor="#34437a4d"
-                                                        keyboardType="default"
-                                                        maxLength={30}
-                                                        secureTextEntry={!showPassword}
-                                                        value={password}
-                                                        onChangeText={txt => {
-                                                            setPassword(txt)
-                                                        }}
-                                                    />
-                                                    <Pressable onPress={togglePasswordVisibility} style={WalkStyle.eyeIconContainer}>
-                                                        {showPassword ? (
-                                                            <EyeIconSvg width={18} height={18} />
-                                                        ) : (
-                                                            <HideEyeIcon width={18} height={18} />
-                                                        )}
-                                                    </Pressable>
-                                                </View>
+                                    </View>
+                                    <View style={WalkStyle.formFirstRow}>
+                                        <View style={{ width: '100%' }}>
+                                            <View style={WalkStyle.formTxt}>
+                                                <Text style={WalkStyle.commonTxtName}>Password</Text>
+                                            </View>
+                                            <View style={WalkStyle.viewElement}>
+                                                <TextInput
+                                                    style={[styles.input]}
+                                                    placeholder="Password"
+                                                    placeholderTextColor="#34437a4d"
+                                                    keyboardType="default"
+                                                    maxLength={30}
+                                                    secureTextEntry={!showPassword}
+                                                    value={password}
+                                                    onChangeText={txt => {
+                                                        setPassword(txt)
+                                                    }}
+                                                />
+                                                <Pressable onPress={togglePasswordVisibility} style={WalkStyle.eyeIconContainer}>
+                                                    {showPassword ? (
+                                                        <EyeIconSvg width={18} height={18} />
+                                                    ) : (
+                                                        <HideEyeIcon width={18} height={18} />
+                                                    )}
+                                                </Pressable>
                                             </View>
                                         </View>
-                                        <PressableClick
-                                            style={WalkStyle.getOTP} onPress={login}>
-                                            <Text accessible={true}
-                                                style={WalkStyle.getOTPText}>Login</Text>
-                                        </PressableClick>
-                                        {/* <PressableClick
+                                    </View>
+                                    <PressableClick
+                                        style={WalkStyle.getOTP} onPress={login}>
+                                        <Text accessible={true}
+                                            style={WalkStyle.getOTPText}>Login</Text>
+                                    </PressableClick>
+                                    {/* <PressableClick
                                  style={WalkStyle.getOTP1}>
                                  <LinkInIconSvg width={20} height={20}></LinkInIconSvg>
                                  <Text accessible={true}
                                      style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
                              </PressableClick> */}
-                                        <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered by The Gamification Company</Text>
-                                    </View>
-                                </ImageBackground>
+                                    <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered by The Gamification Company</Text>
+                                </View>
                             </View>
+
                         </KeyboardAwareScrollView>
                     </ImageBackground>
 
@@ -354,7 +351,7 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'cover',
+        resizeMode: 'repeats',
     },
     scrollViewContainer: {
         flexGrow: 1,
@@ -377,14 +374,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginHorizontal: 7,
         paddingBottom: 50,
-        borderRadius: 10
+        borderRadius: 10,
     },
 
-    input:{
-        height: 55,
-        width: '100%',
+    input: {
+        height: 45,
+        width: '100%', // Set your desired fixed width
+        marginHorizontal: 'auto', // Center the input by using auto margins
         paddingVertical: 10,
-        paddingHorizontal: 15,
+        paddingHorizontal: 10,
         borderRadius: 12,
         color: 'black',
         backgroundColor: 'white',
@@ -392,7 +390,24 @@ const styles = StyleSheet.create({
         fontFamily: 'Inter',
         fontWeight: '500',
         letterSpacing: -0.352,
-    }
+        borderWidth: 1,
+        borderColor: 'black',
+    },
+    card: {
+        backgroundColor: 'white',
+        paddingVertical: 20,
+        paddingHorizontal: 20,
+        borderRadius: 12,
+        elevation: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 0.5 },
+        shadowOpacity: 0.6,
+        elevation: 6,
+        height: 450, // Fixed height value
+        marginHorizontal: width * 0.03, // 5% of the screen width on both sides
+        marginTop: height * 0.45, // 10% of the screen height from the top
+        marginBottom: height * 0.0, // 5% of the screen height from the bottom
+    },
 
 });
 

@@ -26,8 +26,8 @@ export const WalkStyle = StyleSheet.create({
         marginVertical:2,
         borderRadius: 12,
         backgroundColor: WHITE,
-        elevation: 5,
-        ...boxStyle,
+        // elevation: 5,
+        // ...boxStyle,
     },
     searchPlace: {
         fontSize: 14,
@@ -44,9 +44,9 @@ export const WalkStyle = StyleSheet.create({
     },
     getOTP: {
         backgroundColor: BGRED,
-        height: 55,
-        marginTop: "6%",
-        width: "80%",
+        height: 45,
+        marginTop: "10%",
+        width: "100%",
         borderRadius: 24,
         justifyContent: "center",
         alignItems: "center",

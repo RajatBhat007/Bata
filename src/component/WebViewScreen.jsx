@@ -49,7 +49,7 @@ const WebViewScreen = ({ url, userData, onNavigationStateChange,navigation }) =>
     const { url: newUrl } = navState;
     console.log(newUrl);
 
-    if(newUrl=='https://www.m2ost.in/M2OST_Console_PriME/'){
+    if(newUrl=='https://www.m2ost.in/M2OST_NewDev_Console/'){
         console.log('login false');
     //  <LoginScreen/>
     setIsLoggedOut(true)
