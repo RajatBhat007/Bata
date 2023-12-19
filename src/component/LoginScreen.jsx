@@ -36,6 +36,7 @@ const LoginScreen = ({ LoggedIn }) => {
 
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // New loading state
+    
 
     // const handleLogin = async () => {
     //     // Simulate login logic
@@ -266,6 +267,7 @@ const LoginScreen = ({ LoggedIn }) => {
                             contentContainerStyle={styles.scrollViewContainer}
                             keyboardShouldPersistTaps="handled"
                         >
+                             <View style={styles.cardContainer}>
                             <View style={styles.card}>
                                 <View>
                                     <View>
@@ -332,10 +334,10 @@ const LoginScreen = ({ LoggedIn }) => {
                                  <Text accessible={true}
                                      style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
                              </PressableClick> */}
-                                    <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered by The Gamification Company</Text>
+                                    <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>privacy policy</Text>
                                 </View>
                             </View>
-
+                            </View>
                         </KeyboardAwareScrollView>
                     </ImageBackground>
 
@@ -351,7 +353,9 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'repeats',
+        resizeMode: 'cover', // Use 'cover' for the image to fit the entire container
+        width: '100%', // Ensure the image takes the full width
+        height: '100%', // Ensure the image takes the full height
     },
     scrollViewContainer: {
         flexGrow: 1,
@@ -393,6 +397,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
     },
+    cardContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     card: {
         backgroundColor: 'white',
         paddingVertical: 20,
@@ -402,11 +411,11 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 0.5 },
         shadowOpacity: 0.6,
-        elevation: 6,
-        height: 450, // Fixed height value
-        marginHorizontal: width * 0.03, // 5% of the screen width on both sides
-        marginTop: height * 0.45, // 10% of the screen height from the top
-        marginBottom: height * 0.0, // 5% of the screen height from the bottom
+        height: 400, // Fixed height value
+        marginHorizontal: width * 0.03, // 3% of the screen width on both sides
+        position: 'absolute',
+        bottom: 2, // Positioned at the bottom
+        width: '94%', // Occupy 94% of the screen width
     },
 
 });

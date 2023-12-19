@@ -45,7 +45,7 @@ export const WalkStyle = StyleSheet.create({
     getOTP: {
         backgroundColor: BGRED,
         height: 45,
-        marginTop: "10%",
+        marginTop:5,
         width: "100%",
         borderRadius: 24,
         justifyContent: "center",
@@ -58,7 +58,7 @@ export const WalkStyle = StyleSheet.create({
         color: WHITE,
         fontSize: 16,
         fontWeight:"bold",
-        lineHeight: 20
+        lineHeight: 20,
     },
     getOTP1: {
         backgroundColor: WHITE,

@@ -3,10 +3,6 @@ import { BackHandler, Alert, StatusBar, StyleSheet, View, Linking } from 'react-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { WHITE } from './component/color';
 import BataImageGif from './component/BataImageGif';
-import DeviceInfo from 'react-native-device-info';
-import firestore from '@react-native-firebase/firestore';
-import WebView from 'react-native-webview';
-import { prime_url } from './component/environment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoginScreen from './component/LoginScreen';
 
@@ -181,35 +177,35 @@ const App = () => {
     };
   }, []);
 
-  const installedVersion = DeviceInfo.getVersion();
+  // const installedVersion = DeviceInfo.getVersion();
 
-  const getVersions = async () => {
-    try {
-      const users = await firestore().collection('versions').get();
-      const versionFromFirestore = users.docs[0]._data.version;
-      console.log(versionFromFirestore, '......111');
+  // const getVersions = async () => {
+  //   try {
+  //     const users = await firestore().collection('versions').get();
+  //     const versionFromFirestore = users.docs[0]._data.version;
+  //     console.log(versionFromFirestore, '......111');
 
-      if (isMounted.current) {
-        setUpdatedVersion(versionFromFirestore);
+  //     if (isMounted.current) {
+  //       setUpdatedVersion(versionFromFirestore);
 
-        if (versionFromFirestore !== installedVersion) {
-          setShowPopup(true);
-        } else {
-          setShowPopup(false);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching versions:', error);
-    } finally {
-      if (isMounted.current) {
-        setLoadingVersions(false);
-      }
-    }
-  };
+  //       if (versionFromFirestore !== installedVersion) {
+  //         setShowPopup(true);
+  //       } else {
+  //         setShowPopup(false);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching versions:', error);
+  //   } finally {
+  //     if (isMounted.current) {
+  //       setLoadingVersions(false);
+  //     }
+  //   }
+  // };
 
-  useEffect(() => {
-    getVersions();
-  }, []);
+  // useEffect(() => {
+  //   getVersions();
+  // }, []);
 
   useEffect(() => {
     if (showPopup && !loadingVersions && isMounted.current) {

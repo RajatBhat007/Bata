@@ -5,4 +5,5 @@ export const BLACK = '#000000';
 export const DARK_BLACK="#07252D"
 export const BLUE = '#1D2149';
 export const MDGREEN = "#99C939";
-export const DGREEN = "#046465"
+export const DGREEN = "#046465";
+export const LIGHT_GREEN="#1ab394"
