@@ -2,7 +2,6 @@ import { StyleSheet } from "react-native";
 import { BGRED, BLACK, DARK_BLACK, WHITE } from "../color";
 import { boxStyle } from "../constant/comman-style";
 
-
 export const WalkStyle = StyleSheet.create({
     dashboardContainer: {
         flex: 1,
@@ -45,7 +44,7 @@ export const WalkStyle = StyleSheet.create({
     getOTP: {
         backgroundColor: BGRED,
         height: 45,
-        marginTop: "10%",
+        marginTop:0,
         width: "100%",
         borderRadius: 24,
         justifyContent: "center",

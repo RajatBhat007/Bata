@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking, BackHandler, ActivityIndicator, Dimensions } from 'react-native'; // Import KeyboardAvoidingView and Platform
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, StatusBar, ImageBackground, StyleSheet, Text, TextInput, KeyboardAvoidingView, Platform, Pressable, Alert, Linking, ActivityIndicator} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { BGRED, BLACK, DARK_BLACK, GRAY_BLACK, WHITE } from './color';
+import { BGRED, BLACK, DARK_BLACK } from './color';
 import { WalkStyle } from './style/WalkStyle';
 import PressableClick from './constant/PressableClick';
-import { Url, bataUrllogin, prime_url } from './environment';
+import { Url, bataUrllogin } from './environment';
 import EyeIconSvg from './constant/svg/EyeIconSvg';
 import HideEyeIcon from './constant/svg/HideEyeIcon';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // or any other storage library you prefer
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import WebViewScreen from './WebViewScreen';
 
-const { width, height } = Dimensions.get('window');
-const backgroundImage = require('../assets/batalogin.png');
+const backgroundImage = { uri: 'https://www.m2ost.in/Bata_Content/Image/login-banner.PNG' };
 
 const LoginScreen = ({ LoggedIn }) => {
     console.log(LoggedIn, 'LoggedIn value from web screen');
@@ -20,96 +19,38 @@ const LoginScreen = ({ LoggedIn }) => {
     const [username, setUsername] = useState('');
     console.log(username, ".....11");
     const [password, setPassword] = useState('');
-    const [userId, setUserId] = useState('')
     const [url, setUrl] = useState('')
-    const [bataurl, setBataurl] = useState('')
-    const [webview, setWebview] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
-    const [hideLoginScreen, sethideLoginSreen] = useState(false);
-    const [showExitConfirmation, setShowExitConfirmation] = useState(false);
     const [userData, setUserData] = useState({
         UserName: "",
         UserID: "",
         ORGID: "",
         fullname: ""
     });
-
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isLoading, setIsLoading] = useState(true); // New loading state
+    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
 
-    // const handleLogin = async () => {
-    //     // Simulate login logic
-    //     setIsLoggedIn(true);
-    //     await AsyncStorage.setItem('lastLoginDate', new Date().toString());
-    //     const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
-    //     console.log('lastlogindate inside', lastLoginDate);
-
-    // };
-
-    // useEffect(() => {
-    //     const checkLastLoginDate = async () => {
-    //         const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
-    //         console.log('lastlogindate', lastLoginDate);
-    //         if (lastLoginDate) {
-    //             const currentDate = new Date();
-    //             console.log("current date", currentDate);
-    //             const daysSinceLastLogin = Math.floor(
-    //                 (currentDate - new Date(lastLoginDate)) / (1000 * 60 * 60 * 24)
-    //             );
-    //             console.log("days", daysSinceLastLogin);
-    //             if (daysSinceLastLogin < 15) {
-    //                 const bataurl1 = await AsyncStorage.getItem('bataurl');
-    //                 console.log("bataUrl1111", bataurl1);
-    //                 setUrl(bataurl1)
-    //                 setIsLoggedIn(true);
-    //                 setIsLoading(false);
-    //             } else {
-    //                 setIsLoggedIn(false);
-    //             }
-    //         }
-    //     };
-
-    //     checkLastLoginDate();
-    // }, []);
-
+    
     const handleLogin = async () => {
-        // Simulate login logic
         setIsLoggedIn(true);
-        setLoggedInNew(false)
-        // Set the last login date to a future date (10 years from now)
+        setLoggedInNew(false);
         const futureDate = new Date();
         futureDate.setFullYear(futureDate.getFullYear() + 10);
         await AsyncStorage.setItem('lastLoginDate', futureDate.toString());
-        const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
-        console.log('lastlogindate inside', lastLoginDate);
         const bataurl1 = await AsyncStorage.getItem('bataurl');
-        console.log("bataUrl1111", bataurl1);
         setUrl(bataurl1);
         setIsLoading(false);
     };
 
     useEffect(() => {
-        if (LoggedInNew) {
-            console.log(LoggedInNew, '12345555');
-            setIsLoggedIn(false)
-            // setLoggedInNew(false)
-        }
-        else {
-            // setIsLoggedIn(true)
-            setLoggedInNew(false)
-
-        }
-    })
-    useEffect(() => {
         const checkLastLoginDate = async () => {
             const lastLoginDate = await AsyncStorage.getItem('lastLoginDate');
-            console.log('lastlogindate', lastLoginDate);
             if (lastLoginDate) {
                 const currentDate = new Date();
                 const futureDate = new Date(lastLoginDate);
                 if (currentDate < futureDate) {
                     const bataurl1 = await AsyncStorage.getItem('bataurl');
-                    console.log("bataUrl1111", bataurl1);
                     setUrl(bataurl1);
                     setIsLoggedIn(true);
                     setIsLoading(false);
@@ -118,108 +59,75 @@ const LoginScreen = ({ LoggedIn }) => {
                 }
             }
         };
-
         checkLastLoginDate();
-    }, []);
+    }, [LoggedIn]);
 
-    useEffect(() => {
-        if (isLoading) {
-            const loaderTimer = setTimeout(() => {
-                setIsLoading(false);
-            }, 400); // 2 seconds
-            return () => clearTimeout(loaderTimer);
-        }
-    }, [isLoading]);
-
-    if (isLoading) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
-                <ActivityIndicator size="large" color="red" />
-                <Text style={{ color: 'red', fontSize: 20 }}>Loading, please wait for some time</Text>
-            </View>
-        );
-    }
     const login = async () => {
-        console.log('kkkk');
-
+        setLoading(true);
         if (username !== '' && password !== '') {
-            console.log(username);
-            console.log(password);
-
             const options = {
                 method: 'GET',
-                headers: { accept: 'application/json', authkey: '318438A60qs5Ysgqr5e47c80dP1' }
+                headers: { accept: 'application/json', authkey: '318438A60qs5Ysgqr5e47c80dP1' },
             };
-            console.log(options);
 
-            let result = await fetch(`${Url}?USERID=${username}&PASSWORD=${password}`, options)
-            console.log(result);
+            try {
+                let result = await fetch(`${Url}?USERID=${username}&PASSWORD=${password}`, options);
+                let response = await result.json();
 
-            let response = await result.json()
-            console.log(response, "......2222");
+                if (response.ResponseCode === 'SUCCESS') {
+                    let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`;
+                    await AsyncStorage.setItem('bataurl', bataurl);
 
-            if (response.ResponseCode === 'SUCCESS') {
-                console.log('status code 200', response.message);
-                let bataurl = `${bataUrllogin}?USERID=${username}&PASSWORD=${password}`
-                console.log(prime_url);
-                await AsyncStorage.setItem('bataurl', bataurl);
+                    setUserData({
+                        UserName: response.UserName,
+                        UserID: response.UserID,
+                        ORGID: response.ORGID,
+                        fullname: response.fullname,
+                    });
 
-                // Set the userData state with dynamic data from the response
-                setUserData({
-                    UserName: response.UserName,
-                    UserID: response.UserID,
-                    ORGID: response.ORGID,
-                    fullname: response.fullname
-                });
-
-                setUrl(bataurl)
-                handleLogin()
-
-            } else if (response.ResponseCode === 'FAILURE') {
-
-                Alert.alert(
-                    "FAILURE",
-                    (response.ResponseMessage),
-                    [
-                        {
-                            text: "OK",
-                            onPress: handleExitConfirmation,
-                            style: "cancel"
-                        },
-                    ]
-                )
+                    setUrl(bataurl);
+                    handleLogin();
+                } else if (response.ResponseCode === 'FAILURE') {
+                    Alert.alert(
+                        'FAILURE',
+                        response.ResponseMessage,
+                        [
+                            {
+                                text: 'OK',
+                                onPress: handleExitConfirmation,
+                                style: 'cancel',
+                            },
+                        ]
+                    );
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+            } finally {
+                setLoading(false);
             }
-            // Handle other cases here if needed
         }
     };
 
     const togglePasswordVisibility = () => {
         setShowPassword((prevShowPassword) => !prevShowPassword);
     };
-
     const handleExitConfirmation = () => {
-        // Hide the exit confirmation and allow back to close the app
         setUsername('')
         setPassword('')
         setIsLoggedIn(false)
         setLoggedInNew(false)
-
     };
 
     const linking = {
         async getInitialURL() {
-            // Check if app was opened from a deep link
             const url = await Linking.getInitialURL();
             if (url != null) {
                 return url;
             }
-            // Check if there is an initial firebase notification
-
         },
         subscribe(listener) {
             const onReceiveURL = ({ url }) => listener(url);
             console.log(onReceiveURL, "7777");
-            // Listen to incoming links from deep linking
             Linking.addEventListener('url', onReceiveURL);
 
             const url = message?.data?.link;
@@ -229,118 +137,167 @@ const LoginScreen = ({ LoggedIn }) => {
             }
         },
     }
+    const handleLoginPress = useCallback(async () => {
+        setLoading(true);
+        await login();
+        setLoading(false);
+    }, [login]);
+
+    
 
     const handleNavigationChange = (navState) => {
         const { url: newUrl } = navState;
         console.log(newUrl);
-
         if (newUrl === 'https://www.m2ost.in/M2OST_Console_PriME') {
             console.log('login false');
             setIsLoading(false)
         }
         else if (newUrl.startsWith('https://tgc.onelink.me')) {
             console.log(newUrl, "....ww");
-            // Redirect to the app using deep linking
             const deepLinkURL = `https://tgc.onelink.me/1Ut0/jouhje9i?Orgid=15&UID=${userData.UserName}&name=${userData.fullname}`;
 
             Linking.openURL(deepLinkURL);
         }
     };
+    useEffect(() => {
+        if (LoggedInNew) {
+            console.log(LoggedInNew, '12345555');
+            setIsLoggedIn(false);
+        } else {
+            setLoggedInNew(false);
+        }
+        if (isLoading) {
+            const loaderTimer = setTimeout(() => {
+                setIsLoading(false);
+            }, 400);
+            return () => clearTimeout(loaderTimer);
+        }
+        if (isLoggedIn) {
+            handleLogin();
+        }
+    }, [LoggedInNew, isLoading, isLoggedIn]);
+    
+    if (isLoading) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                <ActivityIndicator size="large" color="red" />
+                <Text style={{ color: 'red', fontSize: 20 }}>Loading, please wait for some time</Text>
+            </View>
+        );
+    }
+    const onLoadStart = () => {
+        setLoading(true);
+      };
+    
+      const onLoadEnd = () => {
+        setLoading(false);
+      };
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle="dark-content" />
-            <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-            >
-                {(isLoggedIn ?
+            {/* {loading ? (
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'transparent' }}>
+                    <ActivityIndicator size="large" color="red" />
+                    <Text style={{ color: 'red', fontSize: 20 }}>Loading, please wait for some time</Text>
+                </View>
+            ) : ( */}
+                <KeyboardAvoidingView
+                    style={{ flex: 1 }}
+                    behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+                >
+                    {(isLoggedIn ?
 
-                    <WebViewScreen
-                        url={url}
-                        userData={userData}
-                        onNavigationStateChange={handleNavigationChange} />
-                    :
-                    <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
-                        <KeyboardAwareScrollView
-                            contentContainerStyle={styles.scrollViewContainer}
-                            keyboardShouldPersistTaps="handled"
-                        >
-                            <View style={styles.card}>
-                                <View>
+                        <WebViewScreen
+                            url={url}
+                            userData={userData}
+                            onNavigationStateChange={handleNavigationChange} 
+                            onLoadStart={onLoadStart}
+                            onLoadEnd={onLoadEnd} 
+                            />
+                        :
+                        <ImageBackground source={backgroundImage} style={styles.backgroundImage}>
+                            <KeyboardAwareScrollView
+                                contentContainerStyle={styles.scrollViewContainer}
+                                keyboardShouldPersistTaps="handled"
+                            >
+                                <View style={styles.card}>
                                     <View>
-                                        <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", textAlign: "center", fontWeight: "bold" }}>Login</Text>
-                                        <Text style={{ color: BLACK, fontSize: 16, justifyContent: "center", textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Login in to stay connected</Text>
+                                        <View>
+                                            <Text style={{ color: BGRED, fontSize: 24, justifyContent: "center", textAlign: "center", fontWeight: "bold" }}>Login</Text>
+                                            <Text style={{ color: BLACK, fontSize: 16, justifyContent: "center", textAlign: "center", fontWeight: "bold", marginTop: 20 }}>Login in to stay connected</Text>
 
-                                    </View>
-                                    <View style={WalkStyle.formFirstRow}>
-                                        <View style={{ width: '100%' }}>
-                                            <View style={WalkStyle.formTxt}>
-                                                <Text style={WalkStyle.commonTxtName}>User Id</Text>
-                                            </View>
-                                            <View style={WalkStyle.viewElement}>
-                                                <TextInput
-                                                    style={[styles.input]}
-                                                    placeholder="User Id"
-                                                    placeholderTextColor="#34437a4d"
-                                                    keyboardType="default"
-                                                    maxLength={30}
-                                                    value={username}
-                                                    onChangeText={txt => {
-                                                        setUsername(txt)
-                                                    }}
-                                                />
+                                        </View>
+                                        <View style={WalkStyle.formFirstRow}>
+                                            <View style={{ width: '100%' }}>
+                                                <View style={WalkStyle.formTxt}>
+                                                    <Text style={WalkStyle.commonTxtName}>User Id</Text>
+                                                </View>
+                                                <View style={WalkStyle.viewElement}>
+                                                    <TextInput
+                                                        style={[styles.input]}
+                                                        placeholder="User Id"
+                                                        placeholderTextColor="#34437a4d"
+                                                        keyboardType="default"
+                                                        maxLength={30}
+                                                        value={username}
+                                                        onChangeText={txt => {
+                                                            setUsername(txt)
+                                                        }}
+                                                    />
+                                                </View>
                                             </View>
                                         </View>
-                                    </View>
-                                    <View style={WalkStyle.formFirstRow}>
-                                        <View style={{ width: '100%' }}>
-                                            <View style={WalkStyle.formTxt}>
-                                                <Text style={WalkStyle.commonTxtName}>Password</Text>
-                                            </View>
-                                            <View style={WalkStyle.viewElement}>
-                                                <TextInput
-                                                    style={[styles.input]}
-                                                    placeholder="Password"
-                                                    placeholderTextColor="#34437a4d"
-                                                    keyboardType="default"
-                                                    maxLength={30}
-                                                    secureTextEntry={!showPassword}
-                                                    value={password}
-                                                    onChangeText={txt => {
-                                                        setPassword(txt)
-                                                    }}
-                                                />
-                                                <Pressable onPress={togglePasswordVisibility} style={WalkStyle.eyeIconContainer}>
-                                                    {showPassword ? (
-                                                        <EyeIconSvg width={18} height={18} />
-                                                    ) : (
-                                                        <HideEyeIcon width={18} height={18} />
-                                                    )}
-                                                </Pressable>
+                                        <View style={WalkStyle.formFirstRow}>
+                                            <View style={{ width: '100%' }}>
+                                                <View style={WalkStyle.formTxt}>
+                                                    <Text style={WalkStyle.commonTxtName}>Password</Text>
+                                                </View>
+                                                <View style={WalkStyle.viewElement}>
+                                                    <TextInput
+                                                        style={[styles.input]}
+                                                        placeholder="Password"
+                                                        placeholderTextColor="#34437a4d"
+                                                        keyboardType="default"
+                                                        maxLength={30}
+                                                        secureTextEntry={!showPassword}
+                                                        value={password}
+                                                        onChangeText={txt => {
+                                                            setPassword(txt)
+                                                        }}
+                                                    />
+                                                    <Pressable onPress={togglePasswordVisibility} style={WalkStyle.eyeIconContainer}>
+                                                        {showPassword ? (
+                                                            <EyeIconSvg width={18} height={18} />
+                                                        ) : (
+                                                            <HideEyeIcon width={18} height={18} />
+                                                        )}
+                                                    </Pressable>
+                                                </View>
                                             </View>
                                         </View>
+                                        <PressableClick
+                                            style={WalkStyle.getOTP}
+                                            onPress={handleLoginPress}
+                                            disabled={loading}
+                                        >
+                                            {loading ? (
+                                                <ActivityIndicator size="small" color="white" />
+                                            ) : (
+                                                <Text accessible={true} style={WalkStyle.getOTPText}>
+                                                    Login
+                                                </Text>
+                                            )}
+                                        </PressableClick>
+                                        <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Privacy Policy</Text>
                                     </View>
-                                    <PressableClick
-                                        style={WalkStyle.getOTP} onPress={login}>
-                                        <Text accessible={true}
-                                            style={WalkStyle.getOTPText}>Login</Text>
-                                    </PressableClick>
-                                    {/* <PressableClick
-                                 style={WalkStyle.getOTP1}>
-                                 <LinkInIconSvg width={20} height={20}></LinkInIconSvg>
-                                 <Text accessible={true}
-                                     style={WalkStyle.getOTPText1}>Continue with LinkeIn</Text>
-                             </PressableClick> */}
-                                    <Text style={{ textAlign: "center", top: 5, color: DARK_BLACK, fontSize: 10 }}>Powered by The Gamification Company</Text>
                                 </View>
-                            </View>
-
-                        </KeyboardAwareScrollView>
-                    </ImageBackground>
-
-                )}
-            </KeyboardAvoidingView>
+                            </KeyboardAwareScrollView>
+                        </ImageBackground>
+                    )}
+                </KeyboardAvoidingView>
+{/* 
+            )} */}
         </SafeAreaView>
     );
 };
@@ -351,7 +308,8 @@ const styles = StyleSheet.create({
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'repeats',
+        resizeMode: 'cover',
+        padding: 10
     },
     scrollViewContainer: {
         flexGrow: 1,
@@ -379,8 +337,8 @@ const styles = StyleSheet.create({
 
     input: {
         height: 45,
-        width: '100%', // Set your desired fixed width
-        marginHorizontal: 'auto', // Center the input by using auto margins
+        width: '100%', 
+        marginHorizontal: 'auto',
         paddingVertical: 10,
         paddingHorizontal: 10,
         borderRadius: 12,
@@ -403,12 +361,9 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 0.5 },
         shadowOpacity: 0.6,
         elevation: 6,
-        height: 450, // Fixed height value
-        marginHorizontal: width * 0.03, // 5% of the screen width on both sides
-        marginTop: height * 0.45, // 10% of the screen height from the top
-        marginBottom: height * 0.0, // 5% of the screen height from the bottom
+        height: 400,
+        marginTop: "100%"
     },
-
 });
 
 export default LoginScreen;
